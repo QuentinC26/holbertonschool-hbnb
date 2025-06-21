@@ -1,8 +1,6 @@
-from flask import Flask
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 
-app = Flask(__name__)
 api = Namespace('users', description='User operations')
 
 # Define the user model for input validation and documentation
