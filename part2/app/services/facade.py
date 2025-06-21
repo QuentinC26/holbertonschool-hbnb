@@ -1,3 +1,7 @@
+from flask import Flask
+
+app = Flask(__name__)
+
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
