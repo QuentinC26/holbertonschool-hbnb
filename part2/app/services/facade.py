@@ -1,7 +1,4 @@
-from flask import Flask
-
-app = Flask(__name__)
-
+from app.persistence.repository import InMemoryRepository
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
