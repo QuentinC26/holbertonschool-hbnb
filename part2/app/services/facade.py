@@ -21,3 +21,6 @@ class HBnBFacade:
 
     def get_all_users(self):
         return self.user_repo.get_all()
+
+    def put(self, user_id):
+        return self.user_repo.put(user_id)
