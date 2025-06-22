@@ -1,4 +1,3 @@
-import json
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 
@@ -29,6 +28,10 @@ class UserList(Resource):
         new_user = facade.create_user(user_data)
         return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
 
+    @api.response(200, 'OK')
+    def get_users(self):
+        return list(users.keys())
+
 @api.route('/<user_id>')
 class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully')
@@ -40,9 +43,15 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
-@api.route('/users')
-class UserList(Resource):
+@api.route('/<user_id>', methods=['PUT'])
+class UserResource(Resource):
     @api.response(200, 'OK')
-    def get_users(self):
-        return jsonify(list(users.keys()))
-
+    @api.response(404, 'Not found')
+    @api.response(400, 'Bad Request')
+    def update_user_endpoint(self, user_id):
+        user = facade.get_user(user_id)
+        for index in user_id:
+            if index != user_id:
+                return {'error': 'User not found'}, 404
+            else:
+                return {'id': put.user.id, 'first_name': put.user.first_name, 'last_name': put.user.last_name, 'email': put.user.email}, 200
