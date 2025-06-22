@@ -29,8 +29,10 @@ class UserList(Resource):
         return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
 
     @api.response(200, 'OK')
-    def get_users(self):
-        return list(users.keys())
+    def get(self):
+        users = facade.get_all_users()
+        return [{'id': user.id, 'first_name': user.first_name,
+            'last_name': user.last_name, 'email': user.email} for user in users], 200
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -50,8 +52,7 @@ class UserResource(Resource):
     @api.response(400, 'Bad Request')
     def update_user_endpoint(self, user_id):
         user = facade.get_user(user_id)
-        for index in user_id:
-            if index != user_id:
-                return {'error': 'User not found'}, 404
-            else:
-                return {'id': put.user.id, 'first_name': put.user.first_name, 'last_name': put.user.last_name, 'email': put.user.email}, 200
+        if user == None:
+            return {'error': 'User not found'}, 404
+        else:
+            return {'id': put.user.id, 'first_name': put.user.first_name, 'last_name': put.user.last_name, 'email': put.user.email}, 200
