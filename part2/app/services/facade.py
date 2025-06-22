@@ -34,4 +34,10 @@ class HBnBFacade:
 
     def update_amenity(self, amenity_id, amenity_data):
         # Placeholder for logic to update an amenity
-        pass
+        amenity = amenity.get_by_id(amenity_id)
+        if not review:
+            return None
+        for key, value in amenity_data.items():
+            setattr(review, key, value)
+        amenity.save()
+        return amenity
