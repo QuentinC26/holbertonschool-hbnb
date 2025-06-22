@@ -45,14 +45,16 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
-@api.route('/<user_id>', methods=['PUT'])
-class UserResource(Resource):
     @api.response(200, 'OK')
     @api.response(404, 'Not found')
     @api.response(400, 'Bad Request')
-    def update_user_endpoint(self, user_id):
+    def put(self, user_id):
         user = facade.get_user(user_id)
-        if user == None:
+        if user is None:
             return {'error': 'User not found'}, 404
         else:
-            return {'id': put.user.id, 'first_name': put.user.first_name, 'last_name': put.user.last_name, 'email': put.user.email}, 200
+            user_data = api.payload
+            user.first_name = user_data['first_name']
+            user.last_name = user_data['last_name']
+            user.email = user_data['email']
+            return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
