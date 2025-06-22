@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from part2.app.models.BaseModel import BaseModel
+from app.models.BaseModel import BaseModel
 
 
 class User(BaseModel):
