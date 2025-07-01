@@ -16,17 +16,18 @@ class AmenityList(Resource):
     def post(self):
         """Register a new amenity"""
         amenity_data = api.payload
-        new_amenity = create_amenity(self, amenity_data)
+        new_amenity = facade.create_amenity(self, amenity_data)
         if not new_amenity:
             return {"Invalid input data", 400}
         else:
-            return dict(new_amenity), 201
+            return {'id': new_amenity.id, 'name': new_amenity.name}, 201
 
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
         """Retrieve a list of all amenities"""
-        amenity = get_all_amenities(self)
-        return list(amenity), 200
+        amenity_data = api.payload
+        amenities = facade.get_all_amenities(self)
+        return [{'id': amenities.id, 'name': amenities.name} for amenity in amenities], 200
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
@@ -34,10 +35,11 @@ class AmenityResource(Resource):
     @api.response(404, 'Amenity not found')
     def get(self, amenity_id):
         """Get amenity details by ID"""
-        amenity = get_amenity(self, amenity_id)
+        amenity_data = api.payload
+        amenity = facade.get_amenity(self, amenity_id)
         if not amenity:
             return {'error': 'Amenity not found'}, 404
-        return amenity, 200
+        return {'id': new_amenity.id, 'name': new_amenity.name}, 200
 
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully')
@@ -45,9 +47,12 @@ class AmenityResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
         """Update an amenity's information"""
-        amenity = facade. update_amenity(self, amenity_id, amenity_data)
+        amenity_data = api.payload
+        amenity = facade.update_amenity(self, amenity_id, amenity_data)
         if amenity is None:
             return {'error': 'Amenity not found'}, 404
+        elif ??? :
+            return {'error': 'Invalid input data'}, 400
         else:
-            amenity_data = api.payload
-            return amenity, 200
+            amenity.name = amenity_data['name']
+            return {'id': amenity.id, 'name': amenity.name}, 200
