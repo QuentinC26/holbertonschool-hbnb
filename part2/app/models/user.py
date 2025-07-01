@@ -3,9 +3,8 @@ from datetime import datetime
 from app.models.BaseModel import BaseModel
 
 
-
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, is_admin=False):
+    def __init__(self, first_name, last_name, email, password, is_admin=False):
         super().__init__()
         if not email or not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             raise ValueError("Email invalide")
