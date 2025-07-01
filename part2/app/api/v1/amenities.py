@@ -51,7 +51,7 @@ class AmenityResource(Resource):
         amenity = facade.update_amenity(self, amenity_id, amenity_data)
         if amenity is None:
             return {'error': 'Amenity not found'}, 404
-        elif ??? :
+        elif not amenity :
             return {'error': 'Invalid input data'}, 400
         else:
             amenity.name = amenity_data['name']
