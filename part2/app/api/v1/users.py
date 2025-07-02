@@ -26,13 +26,19 @@ class UserList(Resource):
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
+        if user_model['password']:
+            hash_password = user.hash_password(self, password)
+
         new_user = facade.create_user(user_data)
         return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
 
     @api.response(200, 'OK')
     def get(self):
         users = facade.get_all_users()
-        return [{'id': user.id, 'first_name': user.first_name,
+        if user_model['password']:
+            return None
+        else:
+            return [{'id': user.id, 'first_name': user.first_name,
             'last_name': user.last_name, 'email': user.email} for user in users], 200
 
 @api.route('/<user_id>')
@@ -44,6 +50,8 @@ class UserResource(Resource):
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
+        if user_model['password']:
+            return None
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
     @api.response(200, 'OK')
