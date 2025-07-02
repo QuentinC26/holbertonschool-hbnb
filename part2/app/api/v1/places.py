@@ -1,8 +1,7 @@
 from flask_restx import Namespace, Resource, fields
-from services.place_facade import HBNBFacade
+from app.services import facade
 
 api = Namespace("places", description="Place operations")
-facade = HBNBFacade()
 
 place_model = api.model("Place", {
     "name": fields.String(required=True),
@@ -14,7 +13,6 @@ place_model = api.model("Place", {
     "longitude": fields.Float(required=True),
     "amenity_ids": fields.List(fields.String, required=False)
 })
-
 
 @api.route("/")
 class PlaceList(Resource):
