@@ -1,8 +1,8 @@
-from models.user import User
-from models.place import Place
-from models.review import Review
-from models.amenity import Amenity
-from models.base_model import BaseModel
+from .user import User
+from .place import Place
+from .review import Review
+from .amenity import Amenity
+from .base_model import BaseModel
 
 # Stockage global (ex: DBStorage ou FileStorage)
 from models.storage import DBStorage
