@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from part2.app.models.base_model import BaseModel
+from app.models.base_model import BaseModel
 
 
 
