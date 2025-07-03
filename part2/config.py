@@ -6,6 +6,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    JWT_SECRET_KEY = 'your-secret-key'
 
 config = {
     'development': DevelopmentConfig,
