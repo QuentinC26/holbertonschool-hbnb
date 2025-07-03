@@ -26,12 +26,8 @@ class UserList(Resource):
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
-        if user_model['password']:
-            hash_password = user.hash_password(self, password)
-            return {'id': new_user.id, 'message': 'Your password is created'}, 201
-
         new_user = facade.create_user(user_data)
-        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
+        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email, 'password': new_user.password}, 201
 
     @api.response(200, 'OK')
     def get(self):
