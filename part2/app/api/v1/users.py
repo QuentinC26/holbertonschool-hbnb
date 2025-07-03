@@ -27,6 +27,9 @@ class UserList(Resource):
             return {'error': 'Email already registered'}, 400
 
         new_user = facade.create_user(user_data)
+        if new_user.password:
+            new_user.password = hash.password
+            return verify_password
         return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email, 'password': new_user.password}, 201
 
     @api.response(200, 'OK')
