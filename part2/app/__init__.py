@@ -11,6 +11,8 @@ from app.services.admin_place import api as admin_place_api
 
 api.init_app(app)
 app.register_blueprint(admin_user_api.blueprint)
+app.register_blueprint(admin_amenity_api.blueprint)
+app.register_blueprint(admin_place_api.blueprint)
 
 
 
