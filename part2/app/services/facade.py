@@ -1,5 +1,5 @@
 from app.models.user import User
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import UserRepository
 
 class HBnBFacade:
     def __init__(self):
@@ -10,6 +10,7 @@ class HBnBFacade:
 
     def create_user(self, user_data):
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -17,7 +18,7 @@ class HBnBFacade:
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         return self.user_repo.get_all()
