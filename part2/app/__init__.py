@@ -5,6 +5,13 @@ from app.api.v1.users import api as users_ns
 from app.api.v1.places import api as place_ns
 from app.api.v1.amenities import api as amenity_ns
 from app.api.v1.reviews import api as review_ns
+from app.services.admin_user import api as admin_user_api
+from app.services.admin_amenity import api as admin_amenity_api
+from app.services.admin_place import api as admin_place_api
+
+api.init_app(app)
+app.register_blueprint(admin_user_api.blueprint)
+
 
 
 import config
