@@ -1,6 +1,7 @@
 from app.models.base_model import BaseModel
 from app.models.user import User
 from app.models.amenity import Amenity
+from app.extensions.db import db
 
 
 class Place(BaseModel):
@@ -32,3 +33,24 @@ class Place(BaseModel):
 
     def add_amenity(self, amenity: Amenity):
         self.amenities.append(amenity)
+
+
+class Place(db.Model):
+    __tablename__ = 'places'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "price": self.price,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+        }

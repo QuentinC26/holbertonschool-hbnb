@@ -1,6 +1,7 @@
 from app.models.base_model import BaseModel
 from app.models.user import User
 from app.models.place import Place
+from app.extensions.db import db
 
 
 class Review(BaseModel):
@@ -19,3 +20,18 @@ class Review(BaseModel):
         self.rating = rating
         self.place = place
         self.user = user
+
+
+class Review(db.Model):
+    __tablename__ = 'reviews'
+
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "text": self.text,
+            "rating": self.rating,
+        }
