@@ -188,6 +188,10 @@ Print(place.amenities[0].name) # Wi-Fi
 
 ---
 
+## :clipboard: Diagramme ER
+
+![Diagramme ER](https://i15.servimg.com/u/f15/19/74/13/62/untitl10.png)
+
 ## 📄 Licence
 
 Projet réalisé dans le cadre de la formation Holberton School (HBnB v2 - Business Logic).
