@@ -192,6 +192,32 @@ Print(place.amenities[0].name) # Wi-Fi
 
 ![Diagramme ER](https://i15.servimg.com/u/f15/19/74/13/62/untitl10.png)
 
+### Entités Principales : ###
+
+USER (Utilisateur) : Représente les utilisateurs de ton application. Chaque utilisateur a des attributs comme un ID, un nom, un prénom, un email, un mot de passe, et un indicateur s'il est administrateur ou non.
+
+PLACE (Lieu) : Représente les propriétés ou les lieux que les utilisateurs peuvent créer ou gérer. Les attributs incluent un ID, un titre, une description, un prix, les coordonnées de latitude et de longitude, et l'ID de l'utilisateur qui en est le propriétaire.
+
+AMENITY (Amenité) : Représente les caractéristiques ou services disponibles dans un lieu, comme une piscine ou le Wi-Fi. Chaque amenité possède un ID et un nom.
+
+REVIEW (Commentaire) : Représente des évaluations ou des avis laissés par les utilisateurs sur un lieu. Chaque commentaire a un ID, un texte, un rating (évaluation en chiffres) et fait référence à l'utilisateur et au lieu concerné.
+
+### Relations : ###
+
+USER ||--o{ PLACE : Cela signifie qu'un utilisateur peut créer plusieurs lieux, mais chaque lieu a un seul créateur (l'utilisateur).
+
+USER ||--o{ REVIEW : Un utilisateur peut également laisser plusieurs commentaires, mais chaque commentaire est associé à un seul utilisateur.
+
+PLACE ||--o{ REVIEW : Un lieu peut avoir plusieurs commentaires, mais chaque commentaire se réfère à un seul lieu.
+
+PLACE ||--o{ AMENITY : Un lieu peut avoir plusieurs accompagnements, mais chaque accompagnement peut être associé à plusieurs lieux.
+
+PLACE_AMENITY : C'est une table de liaison qui permet de relier des lieux et des aménités, permettant à un lieu d'avoir plusieurs aménités et inversement.
+
+### Table de Liaison : ###
+
+PLACE_AMENITY : Cette table contient des clés étrangères pour le place_id et amenity_id afin de créer des relations entre les lieux et les aménités.
+
 ## 📄 Licence
 
 Projet réalisé dans le cadre de la formation Holberton School (HBnB v2 - Business Logic).
