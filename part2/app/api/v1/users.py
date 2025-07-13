@@ -52,6 +52,7 @@ class UserResource(Resource):
     @api.response(200, 'OK')
     @api.response(404, 'Not found')
     @api.response(400, 'Bad Request')
+    @jwt_required()
     def put(self, user_id):
         user = facade.get_user(user_id)
         if user is None:
