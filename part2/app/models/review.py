@@ -1,6 +1,7 @@
 from app.models.base_model import BaseModel
 from app.models.user import User
 from app.models.place import Place
+from extensions import db
 
 
 class Review(BaseModel):
@@ -19,3 +20,8 @@ class Review(BaseModel):
         self.rating = rating
         self.place = place
         self.user = user
+
+        __tablename__ = 'reviews'
+
+        text = db.Column(db.String(1024), nullable=False)
+        rating = db.Column(db.Integer, nullable=False)
