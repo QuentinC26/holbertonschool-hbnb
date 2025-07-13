@@ -5,7 +5,7 @@ from app.models.amenity import Amenity
 
 class Place(BaseModel):
     def __init__(
-            self, title, description, price, latitude, longitude, owner: User):
+            self, title, description, price, latitude, longitude, owner: User, amenities=None):
         super().__init__()
         if not title or len(title) > 100:
             raise ValueError("Titre requis ou trop long (max 100 caractères)")
