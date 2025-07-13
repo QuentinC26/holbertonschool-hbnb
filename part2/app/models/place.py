@@ -1,6 +1,7 @@
 from app.models.base_model import BaseModel
 from app.models.user import User
 from app.models.amenity import Amenity
+from extensions import db
 
 
 class Place(BaseModel):
@@ -26,6 +27,14 @@ class Place(BaseModel):
         self.owner = owner
         self.reviews = []
         self.amenities = []
+
+        __tablename__ = 'places'
+
+        title = db.Column(db.String(128), nullable=False)
+        description = db.Column(db.String(1024), nullable=True)
+        price = db.Column(db.Float, nullable=False)
+        latitude = db.Column(db.Float, nullable=True)
+        longitude = db.Column(db.Float, nullable=True)
 
     def add_review(self, review):
         self.reviews.append(review)

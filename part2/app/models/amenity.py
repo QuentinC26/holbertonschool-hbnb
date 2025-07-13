@@ -1,4 +1,5 @@
 from app.models.base_model import BaseModel
+from extensions import db
 
 class Amenity(BaseModel):
     def __init__(self, name):
@@ -6,3 +7,7 @@ class Amenity(BaseModel):
         if not name or len(name) > 50:
             raise ValueError("Nom requis ou trop long (max 50 caractères)")
         self.name = name
+
+        __tablename__ = 'amenities'
+
+        name = db.Column(db.String(128), nullable=False)

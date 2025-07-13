@@ -3,6 +3,13 @@ from app.models.place import Place
 from app.models.amenity import Amenity
 from app.models.review import Review
 from app.persistence.repository import InMemoryRepository
+from repository.place_repository import PlaceRepository
+from repository.review_repository import ReviewRepository
+from repository.amenity_repository import AmenityRepository
+
+place_repo = PlaceRepository()
+review_repo = ReviewRepository()
+amenity_repo = AmenityRepository()
 
 class HBnBFacade:
     def __init__(self):
@@ -156,3 +163,24 @@ class HBnBFacade:
             return None
         review.delete()
         return True
+
+    # Place
+    def create_place(data): return place_repo.create(data)
+    def get_place(id): return place_repo.get(id)
+    def get_all_places(): return place_repo.get_all()
+    def update_place(place, data): return place_repo.update(place, data)
+    def delete_place(place): return place_repo.delete(place)
+
+    # Review
+    def create_review(data): return review_repo.create(data)
+    def get_review(id): return review_repo.get(id)
+    def get_all_reviews(): return review_repo.get_all()
+    def update_review(review, data): return review_repo.update(review, data)
+    def delete_review(review): return review_repo.delete(review)
+
+    # Amenity
+    def create_amenity(data): return amenity_repo.create(data)
+    def get_amenity(id): return amenity_repo.get(id)
+    def get_all_amenities(): return amenity_repo.get_all()
+    def update_amenity(amenity, data): return amenity_repo.update(amenity, data)
+    def delete_amenity(amenity): return amenity_repo.delete(amenity)
