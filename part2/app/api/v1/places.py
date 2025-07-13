@@ -35,10 +35,11 @@ class PlaceList(Resource):
     def post(self):
         data = request.get_json()
         amenities = data.pop('amenities', None)
+        current_user = get_jwt_identity()
         try:
             place = facade.create_place(data)
-            if not owner_id or not check_password_hash(users[username]["password"], password):
-                return jsonify({"error": "Invalid credentials"}), 401 
+            if place.owner_id != current_user:
+                return {'error': 'Unauthorized action'}, 403
             return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None}, 201
         except Exception as e:
             return {"error": str(e)}, 400
@@ -64,12 +65,13 @@ class PlaceResource(Resource):
     @jwt_required()
     def put(self, place_id):
         data = request.get_json()
+        current_user = get_jwt_identity()
         try:
             place = facade.update_place(place_id, data)
             if not place:
                 return {"error": "Place not found"}, 404
-            if not owner_id or is_admin:
-                return {"error": "You can't modify this place"}, 400
+            if place.owner_id != current_user:
+                return {'error': 'Unauthorized action'}, 403
             return {"message": "Place updated successfully"}, 200
         except Exception as e:
             return {"error": str(e)}, 400
