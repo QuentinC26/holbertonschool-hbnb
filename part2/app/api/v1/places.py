@@ -36,14 +36,14 @@ class PlaceList(Resource):
         amenities = data.pop('amenities', None)
         try:
             place = facade.create_place(data)
-            return {'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner_id}, 201
+            return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None}, 201
         except Exception as e:
             return {"error": str(e)}, 400
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
-        places = facade.get_all_places()
-        return [p.to_dict(fields=['id', 'title', 'latitude', 'longitude']) for p in places], 200
+        places = facade.get_list_places()
+        return [{'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None} for place in places], 200
 
 @api.route('/<string:place_id>')
 class PlaceResource(Resource):
