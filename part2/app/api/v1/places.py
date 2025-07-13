@@ -22,8 +22,7 @@ place_model = api.model('Place', {
     'description': fields.String(required=True),
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
-    'longitude': fields.Float(required=True),
-    'owner_id': fields.String(required=True),
+    'longitude': fields.Float(required=True)
 })
 
 @api.route('/')
@@ -36,6 +35,7 @@ class PlaceList(Resource):
         data = request.get_json()
         amenities = data.pop('amenities', None)
         current_user = get_jwt_identity()
+        data["owner_id"] = current_user
         try:
             place = facade.create_place(data)
             if place.owner_id != current_user:
@@ -68,10 +68,10 @@ class PlaceResource(Resource):
         current_user = get_jwt_identity()
         try:
             place = facade.update_place(place_id, data)
-            if not place:
-                return {"error": "Place not found"}, 404
             if place.owner_id != current_user:
                 return {'error': 'Unauthorized action'}, 403
+            if not place:
+                return {"error": "Place not found"}, 403
             return {"message": "Place updated successfully"}, 200
         except Exception as e:
             return {"error": str(e)}, 400
