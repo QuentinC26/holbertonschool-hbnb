@@ -45,7 +45,7 @@ class PlaceList(Resource):
         places = facade.get_list_places()
         return [{'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None} for place in places], 200
 
-@api.route('/<string:place_id>')
+@api.route('/<place_id>')
 class PlaceResource(Resource):
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
@@ -53,11 +53,7 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
-
-        place_dict = place.to_dict()
-        place_dict['owner'] = place.owner.to_dict(fields=['id', 'first_name', 'last_name', 'email']) if place.owner else None
-        place_dict['amenities'] = [a.to_dict(fields=['id', 'name']) for a in place.amenities]
-        return place_dict, 200
+        return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None, 'amenities': [{'id': a.id, 'name': a.name} for a in place.amenities]}, 200
 
     @api.response(200, 'Place updated successfully')
     @api.response(400, 'Invalid input data')
