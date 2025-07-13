@@ -16,7 +16,7 @@ class AmenityList(Resource):
     def post(self):
         """Register a new amenity"""
         amenity_data = api.payload
-        new_amenity = facade.create_amenity(self, amenity_data)
+        new_amenity = facade.create_amenity(amenity_data)
         if not new_amenity:
             return {"Invalid input data", 400}
         else:
@@ -26,8 +26,8 @@ class AmenityList(Resource):
     def get(self):
         """Retrieve a list of all amenities"""
         amenity_data = api.payload
-        amenities = facade.get_all_amenities(self)
-        return [{'id': amenities.id, 'name': amenities.name} for amenity in amenities], 200
+        amenities = facade.get_all_amenities()
+        return [{'id': amenity.id, 'name': amenity.name} for amenity in amenities], 200
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
@@ -36,10 +36,10 @@ class AmenityResource(Resource):
     def get(self, amenity_id):
         """Get amenity details by ID"""
         amenity_data = api.payload
-        amenity = facade.get_amenity(self, amenity_id)
+        amenity = facade.get_amenity(amenity_id)
         if not amenity:
             return {'error': 'Amenity not found'}, 404
-        return {'id': new_amenity.id, 'name': new_amenity.name}, 200
+        return {'id': amenity.id, 'name': amenity.name}, 200
 
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully')
@@ -48,11 +48,11 @@ class AmenityResource(Resource):
     def put(self, amenity_id):
         """Update an amenity's information"""
         amenity_data = api.payload
-        amenity = facade.update_amenity(self, amenity_id, amenity_data)
+        if not amenity_data or 'name' not in amenity_data:
+            return {'error': 'Invalid input data'}, 400
+
+        amenity = facade.update_amenity(amenity_id, amenity_data)
         if amenity is None:
             return {'error': 'Amenity not found'}, 404
-        elif not amenity :
-            return {'error': 'Invalid input data'}, 400
         else:
-            amenity.name = amenity_data['name']
-            return {'id': amenity.id, 'name': amenity.name}, 200
+            return {"message": "Place updated successfully"}, 200
