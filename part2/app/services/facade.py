@@ -1,4 +1,7 @@
 from app.models.user import User
+from app.models.place import Place
+from app.models.amenity import Amenity
+from app.models.review import Review
 from app.persistence.repository import InMemoryRepository
 
 class HBnBFacade:
@@ -38,23 +41,21 @@ class HBnBFacade:
 
     def get_all_amenities(self):
         # Placeholder for logic to retrieve all amenities
-        return self.all_amenity_repo.get(amenity)
+        return self.amenity_repo.get_all()
 
     def update_amenity(self, amenity_id, amenity_data):
         # Placeholder for logic to update an amenity
         amenity = amenity.get_by_id(amenity_id)
-        if not review:
+        if not amenity:
             return None
         for key, value in amenity_data.items():
-            setattr(review, key, value)
-        amenity.save()
+            setattr(amenity, key, value)
         return amenity
 
     def create_place(self, data):
         # Valider les attributs requis
         required = [
-            "name", "description", "city", "user_id",
-            "price_by_night", "latitude", "longitude"
+            "title", "description", "price", "latitude", "longitude", "owner_id"
         ]
 
         for field in required:
@@ -62,19 +63,19 @@ class HBnBFacade:
                 raise ValueError(f"Missing field: {field}")
 
         # Récupérer l'utilisateur propriétaire
-        user = self.repo.get("User", data["user_id"])
+        user = self.user_repo.get(data["owner_id"])
         if not user:
-            raise ValueError("Invalid user_id")
+            raise ValueError("Invalid owner_id")
 
         # Récupérer les amenities s'ils sont fournis
         amenities = []
-        for amenity_id in data.get("amenity_ids", []):
-            amenity = self.repo.get("Amenity", amenity_id)
+        for amenity_id in data.get("amenities", []):
+            amenity = self.amenity_repo.get(amenity_id)
             if amenity:
                 amenities.append(amenity)
 
         # Validation de base
-        if float(data["price_by_night"]) < 0:
+        if float(data["price"]) < 0:
             raise ValueError("Price must be non-negative")
         if not (-90 <= float(data["latitude"]) <= 90):
             raise ValueError("Invalid latitude")
@@ -82,32 +83,30 @@ class HBnBFacade:
             raise ValueError("Invalid longitude")
 
         place = Place(
-            name=data["name"],
+            title=data["title"],
             description=data["description"],
-            city=data["city"],
-            user=user,
-            price_by_night=float(data["price_by_night"]),
+            price=float(data["price"]),
             latitude=float(data["latitude"]),
             longitude=float(data["longitude"]),
-            amenities=amenities
+            owner=user
         )
-        self.repo.add("Place", place)
+        self.place_repo.add(place)
         return place
 
     def get_place(self, place_id):
-        return self.repo.get("Place", place_id)
+        return self.place_repo.get(place_id)
 
     def list_places(self):
-        return self.repo.all("Place")
+        return self.place_repo.get_all()
 
     def update_place(self, place_id, data):
-        place = self.repo.get("Place", place_id)
+        place = self.place_repo.get(place_id)
         if not place:
             return None
 
         for key in [
-            "name", "description", "city",
-            "price_by_night", "latitude", "longitude"
+            "title", "description", "price",
+            "latitude", "longitude"
         ]:
             if key in data:
                 setattr(place, key, data[key])
