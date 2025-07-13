@@ -24,19 +24,19 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True),
     'longitude': fields.Float(required=True),
     'owner_id': fields.String(required=True),
-    'amenities': fields.List(fields.String, required=True)
 })
 
 @api.route('/')
 class PlaceList(Resource):
-    @api.expect(place_model)
+    @api.expect(place_model, validate=True)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
+        data = request.get_json()
+        amenities = data.pop('amenities', None)
         try:
-            data = request.get_json()
             place = facade.create_place(data)
-            return place.to_dict(), 201
+            return {'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner_id}, 201
         except Exception as e:
             return {"error": str(e)}, 400
 
@@ -59,7 +59,6 @@ class PlaceResource(Resource):
         place_dict['amenities'] = [a.to_dict(fields=['id', 'name']) for a in place.amenities]
         return place_dict, 200
 
-    @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(400, 'Invalid input data')
     @api.response(404, 'Place not found')
