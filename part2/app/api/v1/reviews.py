@@ -13,6 +13,7 @@ review_model = api.model('Review', {
 @api.route('/')
 class ReviewList(Resource):
     @api.expect(review_model)
+    @jwt_required()
     def post(self):
         try:
             data = api.payload
@@ -34,6 +35,7 @@ class ReviewResource(Resource):
         return review.to_dict(), 200
 
     @api.expect(review_model)
+    @jwt_required()
     def put(self, review_id):
         try:
             data = api.payload
@@ -44,6 +46,7 @@ class ReviewResource(Resource):
         except ValueError as e:
             return {'error': str(e)}, 400
 
+    @jwt_required()
     def delete(self, review_id):
         deleted = facade.delete_review(review_id)
         if not deleted:
