@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
 from flask_bcrypt import Bcrypt
 
@@ -52,13 +53,27 @@ class UserResource(Resource):
     @api.response(200, 'OK')
     @api.response(404, 'Not found')
     @api.response(400, 'Bad Request')
+    @jwt_required()
     def put(self, user_id):
+        current_user = get_jwt_identity()
         user = facade.get_user(user_id)
         if user is None:
             return {'error': 'User not found'}, 404
-        else:
-            user_data = api.payload
-            user.first_name = user_data['first_name']
-            user.last_name = user_data['last_name']
-            user.email = user_data['email']
-            return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
+
+        current_user = facade.get_user(current_user_id)
+
+        if current_user.id != user.id and not getattr(current_user, "is_admin", False):
+            return {'error': 'Unauthorized action.'}, 403
+
+        user_data = api.payload
+
+        if not getattr(current_user, "is_admin", False):
+            user_data.pop("email", None)
+            user_data.pop("password", None)
+
+        if "password" in user_data:
+            user_data["password"] = bcrypt.generate_password_hash(user_data["password"]).decode('utf-8')
+
+        updated_user = facade.update_user(user_id, user_data)
+
+        return {'id': updated_user.id, 'first_name': updated_user.first_name, 'last_name': updated_user.last_name, 'email': updated_user.email}, 200

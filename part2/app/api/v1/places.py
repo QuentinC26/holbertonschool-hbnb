@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request
 from app.services import facade
 
@@ -22,8 +23,7 @@ place_model = api.model('Place', {
     'description': fields.String,
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
-    'longitude': fields.Float(required=True),
-    'owner_id': fields.String(required=True),
+    'longitude': fields.Float(required=True)
 })
 
 @api.route('/')
@@ -31,11 +31,16 @@ class PlaceList(Resource):
     @api.expect(place_model, validate=True)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
         data = request.get_json()
         amenities = data.pop('amenities', None)
+        current_user = get_jwt_identity()
+        data["owner_id"] = current_user
         try:
             place = facade.create_place(data)
+            if place.owner_id != current_user:
+                return {'error': 'Unauthorized action'}, 403
             return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None}, 201
         except Exception as e:
             return {"error": str(e)}, 400
@@ -58,12 +63,16 @@ class PlaceResource(Resource):
     @api.response(200, 'Place updated successfully')
     @api.response(400, 'Invalid input data')
     @api.response(404, 'Place not found')
+    @jwt_required()
     def put(self, place_id):
         data = request.get_json()
+        current_user = get_jwt_identity()
         try:
             place = facade.update_place(place_id, data)
+            if place.owner_id != current_user:
+                return {'error': 'Unauthorized action'}, 403
             if not place:
-                return {"error": "Place not found"}, 404
+                return {"error": "Place not found"}, 403
             return {"message": "Place updated successfully"}, 200
         except Exception as e:
             return {"error": str(e)}, 400
