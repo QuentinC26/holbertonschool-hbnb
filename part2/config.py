@@ -4,6 +4,8 @@ class Config:
     DEBUG = False
 class DevelopmentConfig(Config):
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = Fals
     JWT_SECRET_KEY = 'your-secret-key'
 
 config = {

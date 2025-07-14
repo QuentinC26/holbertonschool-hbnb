@@ -1,25 +1,23 @@
 from app.models.user import User
+from app.models.user import User
 from app.models.place import Place
 from app.models.amenity import Amenity
 from app.models.review import Review
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import UserRepository
 from repository.place_repository import PlaceRepository
 from repository.review_repository import ReviewRepository
 from repository.amenity_repository import AmenityRepository
 
-place_repo = PlaceRepository()
-review_repo = ReviewRepository()
-amenity_repo = AmenityRepository()
-
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)  # Switched to SQLAlchemyRepository
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
 
     def create_user(self, user_data):
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -27,7 +25,7 @@ class HBnBFacade:
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         return self.user_repo.get_all()
@@ -48,23 +46,23 @@ class HBnBFacade:
 
     def get_all_amenities(self):
         # Placeholder for logic to retrieve all amenities
-        return self.amenity_repo.get_all()
+        return self.all_amenity_repo.get(amenity)
 
     def update_amenity(self, amenity_id, amenity_data):
         # Placeholder for logic to update an amenity
-        amenity = self.amenity_repo.get(amenity_id)
-        if not amenity:
+        amenity = amenity.get_by_id(amenity_id)
+        if not review:
             return None
-        if 'name' in amenity_data:
-            amenity.name = amenity_data['name']
-        else:
-            return False
+        for key, value in amenity_data.items():
+            setattr(review, key, value)
+        amenity.save()
         return amenity
 
     def create_place(self, data):
         # Valider les attributs requis
         required = [
-            "title", "description", "price", "latitude", "longitude", "owner_id"
+            "name", "description", "city", "user_id",
+            "price_by_night", "latitude", "longitude"
         ]
 
         for field in required:
@@ -72,19 +70,19 @@ class HBnBFacade:
                 raise ValueError(f"Missing field: {field}")
 
         # Récupérer l'utilisateur propriétaire
-        user = self.user_repo.get(data["owner_id"])
+        user = self.repo.get("User", data["user_id"])
         if not user:
-            raise ValueError("Invalid owner_id")
+            raise ValueError("Invalid user_id")
 
         # Récupérer les amenities s'ils sont fournis
         amenities = []
-        for amenity_id in data.get("amenities", []):
-            amenity = self.amenity_repo.get(amenity_id)
+        for amenity_id in data.get("amenity_ids", []):
+            amenity = self.repo.get("Amenity", amenity_id)
             if amenity:
                 amenities.append(amenity)
 
         # Validation de base
-        if float(data["price"]) < 0:
+        if float(data["price_by_night"]) < 0:
             raise ValueError("Price must be non-negative")
         if not (-90 <= float(data["latitude"]) <= 90):
             raise ValueError("Invalid latitude")
@@ -92,30 +90,32 @@ class HBnBFacade:
             raise ValueError("Invalid longitude")
 
         place = Place(
-            title=data["title"],
+            name=data["name"],
             description=data["description"],
-            price=float(data["price"]),
+            city=data["city"],
+            user=user,
+            price_by_night=float(data["price_by_night"]),
             latitude=float(data["latitude"]),
             longitude=float(data["longitude"]),
-            owner=user
+            amenities=amenities
         )
-        self.place_repo.add(place)
+        self.repo.add("Place", place)
         return place
 
     def get_place(self, place_id):
-        return self.place_repo.get(place_id)
+        return self.repo.get("Place", place_id)
 
-    def get_list_places(self):
-        return self.place_repo.get_all()
+    def list_places(self):
+        return self.repo.all("Place")
 
-    def update_place(self, place_id):
-        place = self.place_repo.get(place_id)
+    def update_place(self, place_id, data):
+        place = self.repo.get("Place", place_id)
         if not place:
             return None
 
         for key in [
-            "title", "description", "price",
-            "latitude", "longitude"
+            "name", "description", "city",
+            "price_by_night", "latitude", "longitude"
         ]:
             if key in data:
                 setattr(place, key, data[key])
@@ -163,24 +163,3 @@ class HBnBFacade:
             return None
         review.delete()
         return True
-
-    # Place
-    def create_place(data): return place_repo.create(data)
-    def get_place(id): return place_repo.get(id)
-    def get_all_places(): return place_repo.get_all()
-    def update_place(place, data): return place_repo.update(place, data)
-    def delete_place(place): return place_repo.delete(place)
-
-    # Review
-    def create_review(data): return review_repo.create(data)
-    def get_review(id): return review_repo.get(id)
-    def get_all_reviews(): return review_repo.get_all()
-    def update_review(review, data): return review_repo.update(review, data)
-    def delete_review(review): return review_repo.delete(review)
-
-    # Amenity
-    def create_amenity(data): return amenity_repo.create(data)
-    def get_amenity(id): return amenity_repo.get(id)
-    def get_all_amenities(): return amenity_repo.get_all()
-    def update_amenity(amenity, data): return amenity_repo.update(amenity, data)
-    def delete_amenity(amenity): return amenity_repo.delete(amenity)
