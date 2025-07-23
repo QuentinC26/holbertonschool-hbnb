@@ -51,14 +51,15 @@ class ReviewResource(Resource):
     @jwt_required()
     def put(self, review_id):
         current_user = get_jwt_identity()
-        data = dict(api.payload)
-        data["user_id"] = current_user
-        if not review:
+        user_id = current_user['id']
+        review = facade.get_review(review_id)
+        review_data = api.payload
+        if not review_data:
             return {'error': 'Review not found'}, 404
-        if current_user != review.user_id:
+        if review.user.id != user_id:
                 return {'error': "Unauthorized action."}, 403
         try:
-            updated_review = facade.update_review(review_id, data)
+            updated_review = facade.update_review(review_id, review_data)
             return {'message': 'Review updated successfully'}, 200
         except ValueError as e:
             return {'error': str(e)}, 400
@@ -66,19 +67,13 @@ class ReviewResource(Resource):
     @jwt_required()
     def delete(self, review_id):
         current_user = get_jwt_identity()
+        user_id = current_user['id']
         review = facade.get_review(review_id)
+        review_data = api.payload
         if not review:
             return {'error': 'Review not found'}, 404
-        if current_user != review.user_id:
+        if review.user.id != user_id:
             return {'error': "Unauthorized action."}, 403
         deleted = facade.delete_review(review_id)
         return {'message': 'Review deleted successfully'}, 200
 
-@api.route('/places/<place_id>/reviews')
-class PlaceReviewList(Resource):
-    def get(self, place_id):
-        try:
-            reviews = facade.get_reviews_by_place(place_id)
-            return [r.to_dict() for r in reviews], 200
-        except ValueError as e:
-            return {'error': str(e)}, 404
