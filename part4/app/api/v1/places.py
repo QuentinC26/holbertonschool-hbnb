@@ -23,7 +23,8 @@ place_model = api.model('Place', {
     'description': fields.String(required=True),
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
-    'longitude': fields.Float(required=True)
+    'longitude': fields.Float(required=True),
+    'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
 @api.route('/')
@@ -35,12 +36,10 @@ class PlaceList(Resource):
     def post(self):
         data = request.get_json()
         amenities = data.pop('amenities', None)
-        current_user = get_jwt_identity()
+        current_user = get_jwt_identity()["id"]
         data["owner_id"] = current_user
         try:
             place = facade.create_place(data)
-            if place.owner_id != current_user:
-                return {'error': 'Unauthorized action'}, 403
             return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None}, 201
         except Exception as e:
             return {"error": str(e)}, 400
@@ -58,7 +57,26 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
-        return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None, 'amenities': [{'id': a.id, 'name': a.name} for a in place.amenities]}, 200
+        return {'id': place.id, 
+                'title': place.title,
+                'description': place.description,
+                'price': place.price,
+                'latitude': place.latitude,
+                'longitude': place.longitude,
+                'owner': {
+                    "id": place.owner.id, 
+                    "first_name": place.owner.first_name,
+                    "last_name": place.owner.last_name,
+                    "email": place.owner.email
+                    }   
+                    if place.owner else None, 
+                'amenities': [
+                    {
+                        'id': amenity.id, 
+                        'name': amenity.name
+                    } 
+                    for amenity in place.amenities
+                    ]}, 200
 
     @api.response(200, 'Place updated successfully')
     @api.response(400, 'Invalid input data')
@@ -67,12 +85,13 @@ class PlaceResource(Resource):
     def put(self, place_id):
         data = request.get_json()
         current_user = get_jwt_identity()
+        place = facade.get_place(place_id)
+        if not place:
+            return {"error": "Place not found"}, 403
+        if not place.owner or place.owner.id != current_user["id"]:
+            return {'error': 'Unauthorized action'}, 403
         try:
-            place = facade.update_place(place_id, data)
-            if place.owner_id != current_user:
-                return {'error': 'Unauthorized action'}, 403
-            if not place:
-                return {"error": "Place not found"}, 403
+            updated_place = facade.update_place(place_id, data)
             return {"message": "Place updated successfully"}, 200
         except Exception as e:
             return {"error": str(e)}, 400
