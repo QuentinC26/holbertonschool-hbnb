@@ -56,9 +56,7 @@ class UserResource(Resource):
         if user is None:
             return {'error': 'User not found'}, 404
 
-        current_user = facade.get_user(current_user_id)
-
-        if current_user.id != user.id and not getattr(current_user, "is_admin", False):
+        if current_user['id'] != user.id and not getattr(current_user, "is_admin", False):
             return {'error': 'Unauthorized action.'}, 403
 
         user_data = api.payload
@@ -70,6 +68,6 @@ class UserResource(Resource):
         if "password" in user_data:
             user_data["password"] = bcrypt.generate_password_hash(user_data["password"]).decode('utf-8')
 
-        updated_user = facade.update_user(user_id, user_data)
+        updated_user = facade.update_users(user_id, user_data)
 
         return {'id': updated_user.id, 'first_name': updated_user.first_name, 'last_name': updated_user.last_name, 'email': updated_user.email}, 200
