@@ -29,7 +29,14 @@ class HBnBFacade:
         return self.user_repo.get_all()
 
     def update_users(self, user_id, user_data):
-        return self.user_repo.update(user_id, user_data)
+        user = self.user_repo.update(user_id, user_data)
+        if not user:
+            return None
+
+        for key in ["first_name", "last_name"]:
+            if key in user_data:
+                setattr(user, key, user_data[key])
+        return user
 
     def create_amenity(self, amenity_data):
         # Placeholder for logic to create an amenity
