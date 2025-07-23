@@ -12,7 +12,9 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()
 
     def create_user(self, user_data):
+        from app import bcrypt
         user = User(**user_data)
+        user.hash_password(user.password)
         self.user_repo.add(user)
         return user
 
