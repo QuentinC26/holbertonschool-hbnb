@@ -15,6 +15,7 @@ class HBnBFacade:
         from app import bcrypt
         user = User(**user_data)
         user.hash_password(user.password)
+        user.verify_password(user.password)
         self.user_repo.add(user)
         return user
 
