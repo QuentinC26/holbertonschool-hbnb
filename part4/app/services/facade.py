@@ -103,7 +103,7 @@ class HBnBFacade:
     def get_list_places(self):
         return self.place_repo.get_all()
 
-    def update_place(self, place_id):
+    def update_place(self, place_id, data):
         place = self.place_repo.get(place_id)
         if not place:
             return None
