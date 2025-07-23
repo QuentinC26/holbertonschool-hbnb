@@ -151,22 +151,23 @@ class HBnBFacade:
         return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        place = Place.get_by_id(place_id)
+        place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place not found")
-        return [r for r in Review.all() if r.place_id == place_id]
+        return [review for review in self.review_repo.get_all() if review.place.id == place_id]
 
     def update_review(self, review_id, review_data):
-        review = Review.get_by_id(review_id)
+        review = self.review_repo.get(review_id)
         if not review:
             return None
-        for key, value in review_data.items():
-            setattr(review, key, value)
+        for key in ["text", "rating"]:
+            if key in review_data:
+                setattr(review, key, review_data[key])
         review.save()
         return review
 
     def delete_review(self, review_id):
-        review = Review.get_by_id(review_id)
+        review = self.review_repo.delete(review_id)
         if not review:
             return None
         review.delete()
