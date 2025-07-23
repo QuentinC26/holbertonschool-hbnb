@@ -2,7 +2,6 @@ import re
 from datetime import datetime
 from app.models.base_model import BaseModel
 
-
 class User(BaseModel):
     def __init__(self, first_name, last_name, email, password, is_admin=False):
         super().__init__()
@@ -18,6 +17,7 @@ class User(BaseModel):
         self.password = password
 
     def hash_password(self, password):
+        from app import bcrypt
         """Hashes the password before storing it."""
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
