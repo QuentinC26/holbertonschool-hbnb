@@ -1,10 +1,8 @@
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
-from flask_bcrypt import Bcrypt
 
 api = Namespace('users', description='User operations')
-bcrypt = Bcrypt()
 
 # Define the user model for input validation and documentation
 user_model = api.model('User', {
@@ -30,9 +28,7 @@ class UserList(Resource):
             return {'error': 'Email already registered'}, 400
 
         new_user = facade.create_user(user_data)
-        if new_user.password:
-            new_user.password = bcrypt.generate_password_hash(new_user.password).decode('utf-8')
-        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email, 'password': new_user.password}, 201
+        return {'id': new_user.id, 'message': "The user has been created successfully."}, 201
 
     @api.response(200, 'OK')
     def get(self):
