@@ -15,32 +15,37 @@ class ReviewList(Resource):
     @api.expect(review_model)
     @jwt_required()
     def post(self):
+        review_data = api.payload
         current_user = get_jwt_identity()
-        data = dict(api.payload)
-        data["user_id"] = current_user
-        place = facade.get_place(data["place_id"])
-        review = facade.get_review_by_user_and_place(current_user, data["place_id"])
+        user_id = current_user['id']
+        user = facade.get_user(user_id)
+        if not user:
+            return {'error': 'User not found'}, 404
+        place = facade.get_place(review_data["place_id"])
+        if not place:
+            return {'error': 'Place not found'}, 404
+        review = facade.get_all_reviews()
         try:
-            if current_user == place.owner_id:
+            if current_user == place.owner.id:
                 return {'error': "you cannot review your own place."}, 400
             if review:
                 return {'error': "You have already reviewed this place."}, 400
-            review = facade.create_review(data)
-            return review.to_dict(), 201
+            new_review = facade.create_review(review_data)
+            return {"id": new_review.id, "text": new_review.text, "rating": new_review.rating, "user_id": user.id if user.id else None, 'place_id': place.id if place.id else None}, 201
         except ValueError as e:
             return {'error': str(e)}, 400
 
     def get(self):
-        reviews = [r.to_dict() for r in facade.get_all_reviews()]
-        return reviews, 200
+        reviews = facade.get_all_reviews()
+        return [{'id': review.id, 'text': review.text, 'rating': review.rating} for review in reviews], 200
 
 @api.route('/<review_id>')
 class ReviewResource(Resource):
     def get(self, review_id):
-        review = facade.get_review(review_id)
-        if not review:
+        reviews = facade.get_all_reviews()
+        if not reviews:
             return {'error': 'Review not found'}, 404
-        return review.to_dict(), 200
+        return [{'id': review.id, 'text': review.text, 'rating': review.rating, "user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None} for review in reviews], 200
 
     @api.expect(review_model)
     @jwt_required()
