@@ -107,3 +107,12 @@ class PlaceResource(Resource):
             return {"message": "Place updated successfully"}, 200
         except Exception as e:
             return {"error": str(e)}, 400
+
+@api.route('/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    def get(self, place_id):
+        try:
+            reviews = facade.get_reviews_by_place(place_id)
+            return [{'id': review.id, 'text': review.text, 'rating': review.rating} for review in reviews], 200
+        except ValueError as e:
+            return {'error': str(e)}, 404
