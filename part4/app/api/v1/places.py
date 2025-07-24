@@ -59,7 +59,7 @@ class PlaceList(Resource):
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
         places = facade.get_list_places()
-        return [{'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id if place.owner else None} for place in places], 200
+        return [{'id': place.id, 'title': place.title, 'latitude': place.latitude, 'longitude': place.longitude} for place in places], 200
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
@@ -72,7 +72,6 @@ class PlaceResource(Resource):
         return {'id': place.id, 
                 'title': place.title,
                 'description': place.description,
-                'price': place.price,
                 'latitude': place.latitude,
                 'longitude': place.longitude,
                 'owner': {
