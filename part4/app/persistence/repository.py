@@ -21,6 +21,7 @@ class SQLAlchemyRepository():
             for key, value in data.items():
                 setattr(obj, key, value)
             db.session.commit()
+            return obj
 
     def delete(self, obj_id):
         obj = self.get(obj_id)
