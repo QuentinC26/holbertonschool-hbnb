@@ -5,11 +5,12 @@ from app.models.review import Review
 from app.persistence.repository import SQLAlchemyRepository
 from app.persistence.UserRepository import UserRepository
 from app.persistence.AmenityRepository import AmenityRepository
+from app.persistence.PlaceRepository import PlaceRepository
 
 class HBnBFacade:
     def __init__(self):
         self.user_repository = UserRepository()
-        self.place_repository = SQLAlchemyRepository(Place)
+        self.place_repository = PlaceRepository()
         self.review_repository = SQLAlchemyRepository(Review)
         self.amenity_repository = AmenityRepository()
 
