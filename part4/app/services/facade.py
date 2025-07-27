@@ -6,7 +6,7 @@ from app.persistence.repository import SQLAlchemyRepository
 from app.persistence.UserRepository import UserRepository
 from app.persistence.AmenityRepository import AmenityRepository
 from app.persistence.PlaceRepository import PlaceRepository
-from app.persistence.PlaceRepository import ReviewRepository
+from app.persistence.ReviewRepository import ReviewRepository
 
 class HBnBFacade:
     def __init__(self):
