@@ -1,20 +1,23 @@
 from app.models.user import User
-from app.persistence.repository import InMemoryRepository
+from app.models.place import Place
+from app.models.review import Review
+from app.models.amenity import Amenity
+
+from repository.user_repository import UserRepository
 from repository.place_repository import PlaceRepository
 from repository.review_repository import ReviewRepository
 from repository.amenity_repository import AmenityRepository
 
-place_repo = PlaceRepository()
-review_repo = ReviewRepository()
-amenity_repo = AmenityRepository()
+from utils.validation import validate_price, validate_latitude, validate_longitude
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = UserRepository()
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
+        self.amenity_repo = AmenityRepository()
 
+    # Users
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repo.add(user)
@@ -29,96 +32,126 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
 
-    def put_update_users(self, user_id):
-        return self.user_repo.put(user_id)
+    def update_user(self, user_id, data):
+        user = self.get_user(user_id)
+        if not user:
+            return None
+        user.update(data)
+        self.user_repo.update()
+        return user
 
-    
+    def delete_user(self, user_id):
+        user = self.get_user(user_id)
+        if not user:
+            return False
+        self.user_repo.delete(user)
+        return True
+
+    # Amenities
     def create_amenity(self, amenity_data):
-        # Placeholder for logic to create an amenity
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
 
     def get_amenity(self, amenity_id):
-        # Placeholder for logic to retrieve an amenity by ID
         return self.amenity_repo.get(amenity_id)
 
     def get_all_amenities(self):
-        # Placeholder for logic to retrieve all amenities
-        return self.all_amenity_repo.get(amenity)
+        return self.amenity_repo.get_all()
 
-    def update_amenity(self, amenity_id, amenity_data):
-        # Placeholder for logic to update an amenity
-        amenity = amenity.get_by_id(amenity_id)
-        if not review:
+    def update_amenity(self, amenity_id, data):
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
             return None
-        for key, value in amenity_data.items():
-            setattr(review, key, value)
-        amenity.save()
+        amenity.update(data)
+        self.amenity_repo.update()
         return amenity
 
+    def delete_amenity(self, amenity_id):
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
+            return False
+        self.amenity_repo.delete(amenity)
+        return True
 
-
+    # Reviews
     def create_review(self, review_data):
-        user = User.get_by_id(review_data["user_id"])
-        place = Place.get_by_id(review_data["place_id"])
+        user = self.get_user(review_data.get("user_id"))
+        place = self.place_repo.get(review_data.get("place_id"))
 
         if not user or not place:
             raise ValueError("User or Place not found")
 
         rating = review_data.get("rating")
-        if not (1 <= rating <= 5):
+        if rating is None or not (1 <= rating <= 5):
             raise ValueError("Rating must be between 1 and 5")
 
         review = Review(**review_data)
-        review.save()
+        self.review_repo.add(review)
         return review
 
     def get_review(self, review_id):
-        return Review.get_by_id(review_id)
+        return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
-        return Review.all()
+        return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        place = Place.get_by_id(place_id)
+        place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place not found")
-        return [r for r in Review.all() if r.place_id == place_id]
+        return [r for r in self.get_all_reviews() if r.place_id == place_id]
 
-    def update_review(self, review_id, review_data):
-        review = Review.get_by_id(review_id)
+    def update_review(self, review_id, data):
+        review = self.get_review(review_id)
         if not review:
             return None
-        for key, value in review_data.items():
-            setattr(review, key, value)
-        review.save()
+        review.update(data)
+        self.review_repo.update()
         return review
 
     def delete_review(self, review_id):
-        review = Review.get_by_id(review_id)
+        review = self.get_review(review_id)
         if not review:
-            return None
-        review.delete()
+            return False
+        self.review_repo.delete(review)
         return True
 
-    # Place
-    def create_place(data): return place_repo.create(data)
-    def get_place(id): return place_repo.get(id)
-    def get_all_places(): return place_repo.get_all()
-    def update_place(place, data): return place_repo.update(place, data)
-    def delete_place(place): return place_repo.delete(place)
+    # Places
+    def create_place(self, place_data):
+        validate_price(place_data.get('price'))
+        validate_latitude(place_data.get('latitude'))
+        validate_longitude(place_data.get('longitude'))
 
-    # Review
-    def create_review(data): return review_repo.create(data)
-    def get_review(id): return review_repo.get(id)
-    def get_all_reviews(): return review_repo.get_all()
-    def update_review(review, data): return review_repo.update(review, data)
-    def delete_review(review): return review_repo.delete(review)
+        place = Place(**place_data)
+        self.place_repo.add(place)
+        return place
 
-    # Amenity
-    def create_amenity(data): return amenity_repo.create(data)
-    def get_amenity(id): return amenity_repo.get(id)
-    def get_all_amenities(): return amenity_repo.get_all()
-    def update_amenity(amenity, data): return amenity_repo.update(amenity, data)
-    def delete_amenity(amenity): return amenity_repo.delete(amenity)
+    def get_place(self, place_id):
+        return self.place_repo.get(place_id)
+
+    def get_all_places(self):
+        return self.place_repo.get_all()
+
+    def update_place(self, place_id, data):
+        place = self.get_place(place_id)
+        if not place:
+            return None
+
+        if 'price' in data:
+            validate_price(data['price'])
+        if 'latitude' in data:
+            validate_latitude(data['latitude'])
+        if 'longitude' in data:
+            validate_longitude(data['longitude'])
+
+        place.update(data)
+        self.place_repo.update()
+        return place
+
+    def delete_place(self, place_id):
+        place = self.get_place(place_id)
+        if not place:
+            return False
+        self.place_repo.delete(place)
+        return True
