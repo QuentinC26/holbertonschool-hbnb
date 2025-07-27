@@ -7,13 +7,12 @@ class Place(BaseModel):
     from app import db
     _tablename__ = 'places'
 
-    id = db.Column(db.String(36), primary_key = True, nullable=False)
+    id = db.Column(db.String, primary_key = True, nullable=False)
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Float, nullable=False, unique=True)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    owner_id = db.Column(db.String(60), db.ForeignKey('users.id'), nullable=False)
 
     def __init__(self, title, description, price, latitude, longitude, owner: User, amenities=None):
         super().__init__()
