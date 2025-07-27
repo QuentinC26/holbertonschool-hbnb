@@ -1,4 +1,5 @@
 from app.models.baseclass import BaseModel
+from sqlalchemy.orm import relationship
 
 class Amenity(BaseModel):
     from app import db
