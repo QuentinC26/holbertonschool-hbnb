@@ -1,5 +1,5 @@
 from models.amenity import Amenity
-from models import db
+from models.engine.db_storage import db  # Assuming 'db' is the SQLAlchemy instance
 
 class AmenityRepository:
     def __init__(self, session=db.session):
