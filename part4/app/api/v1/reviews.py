@@ -26,8 +26,8 @@ class ReviewList(Resource):
             return {'error': 'Place not found'}, 404
         review = facade.get_all_reviews()
         try:
-            if current_user == place.owner.id:
-                return {'error': "you cannot review your own place."}, 400
+            #if current_user == place.owner.id:
+                #return {'error': "you cannot review your own place."}, 400
             if review:
                 return {'error': "You have already reviewed this place."}, 400
             new_review = facade.create_review(review_data)
@@ -45,7 +45,8 @@ class ReviewResource(Resource):
         reviews = facade.get_all_reviews()
         if not reviews:
             return {'error': 'Review not found'}, 404
-        return [{'id': review.id, 'text': review.text, 'rating': review.rating, "user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None} for review in reviews], 200
+        return [{'id': review.id, 'text': review.text, 'rating': review.rating } for review in reviews #,"user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None}
+        ], 200
 
     @api.expect(review_model)
     @jwt_required()
@@ -56,8 +57,8 @@ class ReviewResource(Resource):
         review_data = api.payload
         if not review_data:
             return {'error': 'Review not found'}, 404
-        if review.user.id != user_id:
-                return {'error': "Unauthorized action."}, 403
+        #if review.user.id != user_id:
+                #return {'error': "Unauthorized action."}, 403
         try:
             updated_review = facade.update_review(review_id, review_data)
             return {'message': 'Review updated successfully'}, 200
@@ -67,13 +68,13 @@ class ReviewResource(Resource):
     @jwt_required()
     def delete(self, review_id):
         current_user = get_jwt_identity()
-        user_id = current_user['id']
+        #user_id = current_user['id']
         review = facade.get_review(review_id)
         review_data = api.payload
         if not review:
             return {'error': 'Review not found'}, 404
-        if review.user.id != user_id:
-            return {'error': "Unauthorized action."}, 403
+        #if review.user.id != user_id:
+            #return {'error': "Unauthorized action."}, 403
         deleted = facade.delete_review(review_id)
         return {'message': 'Review deleted successfully'}, 200
 
