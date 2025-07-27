@@ -1,11 +1,12 @@
 from app.models.baseclass import BaseModel
 from app.models.user import User
 from app.models.amenity import Amenity
+from sqlalchemy.orm import relationship
 
 
 class Place(BaseModel):
     from app import db
-    _tablename__ = 'places'
+    __tablename__ = 'places'
 
     id = db.Column(db.String, primary_key = True, nullable=False)
     title = db.Column(db.String(50), nullable=False)
@@ -13,6 +14,9 @@ class Place(BaseModel):
     price = db.Column(db.Float, nullable=False, unique=True)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
+    owner = relationship("User", backref="places")
+    amenities = relationship("Amenity", backref="places")
 
     def __init__(self, title, description, price, latitude, longitude, owner: User, amenities=None):
         super().__init__()
@@ -33,8 +37,7 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
-        self.reviews = []
-        self.amenities = []
+        self.amenities = amenities or []
 
     def add_review(self, review):
         self.reviews.append(review)
