@@ -72,7 +72,7 @@ class HBnBFacade:
         required = [
             "title", "description", "price", "latitude", "longitude", "owner_id"
         ]
-
+        
         for field in required:
             if field not in data:
                 raise ValueError(f"Missing field: {field}")
@@ -83,7 +83,6 @@ class HBnBFacade:
             raise ValueError("Invalid owner_id")
 
         # Récupérer les amenities s'ils sont fournis
-        amenities = []
         for amenity_id in data.get("amenities", []):
             amenity = self.amenity_repository.get(amenity_id)
             if amenity:
@@ -103,7 +102,8 @@ class HBnBFacade:
             price=float(data["price"]),
             latitude=float(data["latitude"]),
             longitude=float(data["longitude"]),
-            owner=user
+            owner=user,
+            amenities=amenities
         )
         self.place_repository.add(place)
         return place
@@ -146,7 +146,6 @@ class HBnBFacade:
                 place=place,
                 rating=review_data["rating"]
                 )
-        review.save()
         self.review_repository.add(review)
         return review
 
