@@ -2,6 +2,7 @@ import uuid
 from .baseclass import BaseModel
 import re
 from datetime import datetime
+from sqlalchemy.orm import relationship
 
 class User(BaseModel):
     from app import bcrypt, db
