@@ -74,20 +74,21 @@ class PlaceResource(Resource):
                 'description': place.description,
                 'latitude': place.latitude,
                 'longitude': place.longitude,
-                'owner': {
-                    "id": place.owner.id, 
-                    "first_name": place.owner.first_name,
-                    "last_name": place.owner.last_name,
-                    "email": place.owner.email
-                    }   
-                    if place.owner else None, 
-                'amenities': [
-                    {
-                        'id': amenity.id, 
-                        'name': amenity.name
-                    } 
-                    for amenity in place.amenities
-                    ]}, 200
+                #'owner': {
+                    #"id": place.owner.id, 
+                    #"first_name": place.owner.first_name,
+                    #"last_name": place.owner.last_name,
+                    #"email": place.owner.email
+                    #}   
+                    #if place.owner else None, 
+                #'amenities': [
+                    #{
+                        #'id': amenity.id, 
+                        #'name': amenity.name
+                    #} 
+                    #for amenity in place.amenities
+                    #]
+                    }, 200
 
     @api.response(200, 'Place updated successfully')
     @api.response(400, 'Invalid input data')
@@ -99,8 +100,8 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 403
-        if not place.owner or place.owner.id != current_user["id"]:
-            return {'error': 'Unauthorized action'}, 403
+        #if not place.owner or place.owner.id != current_user["id"]:
+            #return {'error': 'Unauthorized action'}, 403
         try:
             updated_place = facade.update_place(place_id, data)
             return {"message": "Place updated successfully"}, 200
