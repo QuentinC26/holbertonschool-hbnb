@@ -7,6 +7,7 @@ class Place(BaseModel):
     from app import db
     _tablename__ = 'places'
 
+    id = db.Column(db.Integer(50), primary_key = True, nullable=False)
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Float, nullable=False, unique=True)
