@@ -1,13 +1,15 @@
-from app.models.base_model import BaseModel
-from extensions import db
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
 
-class Amenity(BaseModel):
+class Amenity(BaseModel, Base):
+    __tablename__ = 'amenities'
+
+    name = Column(String(128), nullable=False)
+    places = relationship("Place", secondary='place_amenity', viewonly=True)
+
     def __init__(self, name):
         super().__init__()
-        if not name or len(name) > 50:
-            raise ValueError("Nom requis ou trop long (max 50 caractères)")
+        if not name or len(name.strip()) == 0:
+            raise ValueError("Nom de l'équipement requis")
         self.name = name
-
-        __tablename__ = 'amenities'
-
-        name = db.Column(db.String(128), nullable=False)
