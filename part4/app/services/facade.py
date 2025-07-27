@@ -125,6 +125,8 @@ class HBnBFacade:
         ]:
             if key in data:
                 setattr(place, key, data[key])
+        
+        self.place_repository.commit()
         return place
 
     def create_review(self, review_data):
@@ -167,7 +169,7 @@ class HBnBFacade:
         for key in ["text", "rating"]:
             if key in review_data:
                 setattr(review, key, review_data[key])
-        review.save()
+        self.review_repository.commit()
         return review
 
     def delete_review(self, review_id):
