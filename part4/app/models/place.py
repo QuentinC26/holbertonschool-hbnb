@@ -4,8 +4,17 @@ from app.models.amenity import Amenity
 
 
 class Place(BaseModel):
-    def __init__(
-            self, title, description, price, latitude, longitude, owner: User, amenities=None):
+    from app import db
+    _tablename__ = 'places'
+
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(50), nullable=False)
+    price = db.Column(db.Float, nullable=False, unique=True)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+    owner_id = db.Column(db.String(60), db.ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, title, description, price, latitude, longitude, owner: User, amenities=None):
         super().__init__()
         if not title or len(title) > 100:
             raise ValueError("Titre requis ou trop long (max 100 caractères)")
