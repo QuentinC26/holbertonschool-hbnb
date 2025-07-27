@@ -4,6 +4,14 @@ from app.models.place import Place
 
 
 class Review(BaseModel):
+    from app import db
+    __tablename__ = 'reviews'
+
+    text = db.Column(db.String(50), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    place_id = db.Column(db.String(60), db.ForeignKey('places.id'), nullable=False)
+    owner_id = db.Column(db.String(60), db.ForeignKey('users.id'), nullable=False)
+
     def __init__(self, text, rating, place: Place, user: User):
         super().__init__()
         if not text:
