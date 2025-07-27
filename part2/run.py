@@ -17,12 +17,12 @@ def create_app(config_name='default'):
     CORS(app)
 
     # Register blueprints
-    from api.v1 import api_v1_bp
+    from app.api.v1 import api_v1_bp
     app.register_blueprint(api_v1_bp, url_prefix='/api/v1')
 
     return app
 
 
-if name == '__main__':
+if __name__ == '__main__':
     app = create_app()
     app.run(host='0.0.0.0', port=5000)
