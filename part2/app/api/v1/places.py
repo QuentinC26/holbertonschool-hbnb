@@ -1,45 +1,51 @@
 from flask_restx import Namespace, Resource, fields
-from app.services import facade
+from flask import request
+from services.facade import HBnBFacade
 
-api = Namespace("places", description="Place operations")
+api = Namespace('places', description='Place operations')
+facade = HBnBFacade()
 
-place_model = api.model("Place", {
-    "name": fields.String(required=True),
-    "description": fields.String(required=True),
-    "city": fields.String(required=True),
-    "user_id": fields.String(required=True),
-    "price_by_night": fields.Float(required=True),
-    "latitude": fields.Float(required=True),
-    "longitude": fields.Float(required=True),
-    "amenity_ids": fields.List(fields.String, required=False)
+place_model = api.model('Place', {
+    'title': fields.String(required=True),
+    'description': fields.String,
+    'price': fields.Float(required=True),
+    'latitude': fields.Float(required=True),
+    'longitude': fields.Float(required=True),
+    'owner_id': fields.String(required=True),
+    'amenities': fields.List(fields.String, required=True)
 })
 
-@api.route("/")
+@api.route('/')
 class PlaceList(Resource):
-    def get(self):
-        return [p.serialize() for p in facade.list_places()]
-
     @api.expect(place_model)
     def post(self):
+        """Create a new place"""
         try:
-            data = api.payload
-            place = facade.create_place(data)
-            return place.serialize(), 201
-        except ValueError as e:
-            return {"error": str(e)}, 400
+            place = facade.create_place(request.get_json())
+            return place.to_dict(with_owner=True, with_amenities=True), 201
+        except Exception as e:
+            return {'error': str(e)}, 400
 
+    def get(self):
+        """Retrieve all places"""
+        places = facade.get_all_places()
+        return [p.to_dict() for p in places], 200
 
-@api.route("/<string:place_id>")
+@api.route('/<string:place_id>')
 class PlaceResource(Resource):
     def get(self, place_id):
-        place = facade.get_place(place_id)
-        if not place:
-            return {"error": "Place not found"}, 404
-        return place.serialize()
+        """Retrieve a single place with relationships"""
+        try:
+            place = facade.get_place(place_id)
+            return place.to_dict(with_owner=True, with_amenities=True), 200
+        except Exception as e:
+            return {'error': str(e)}, 404
 
+    @api.expect(place_model)
     def put(self, place_id):
-        data = api.payload
-        place = facade.update_place(place_id, data)
-        if not place:
-            return {"error": "Place not found"}, 404
-        return place.serialize()
+        """Update an existing place"""
+        try:
+            facade.update_place(place_id, request.get_json())
+            return {'message': 'Place updated successfully'}, 200
+        except Exception as e:
+            return {'error': str(e)}, 400

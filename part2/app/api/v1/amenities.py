@@ -1,58 +1,45 @@
 from flask_restx import Namespace, Resource, fields
-from app.services import facade
+from flask import request
+from services.facade import HBnBFacade
 
 api = Namespace('amenities', description='Amenity operations')
+facade = HBnBFacade()
 
-# Define the amenity model for input validation and documentation
 amenity_model = api.model('Amenity', {
-    'name': fields.String(required=True, description='Name of the amenity')
+    'name': fields.String(required=True)
 })
 
 @api.route('/')
 class AmenityList(Resource):
     @api.expect(amenity_model)
-    @api.response(201, 'Amenity successfully created')
-    @api.response(400, 'Invalid input data')
     def post(self):
-        """Register a new amenity"""
-        amenity_data = api.payload
-        new_amenity = facade.create_amenity(self, amenity_data)
-        if not new_amenity:
-            return {"Invalid input data", 400}
-        else:
-            return {'id': new_amenity.id, 'name': new_amenity.name}, 201
+        """Create a new amenity"""
+        try:
+            amenity = facade.create_amenity(request.get_json())
+            return amenity.to_dict(), 201
+        except Exception as e:
+            return {'error': str(e)}, 400
 
-    @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
-        """Retrieve a list of all amenities"""
-        amenity_data = api.payload
-        amenities = facade.get_all_amenities(self)
-        return [{'id': amenities.id, 'name': amenities.name} for amenity in amenities], 200
+        """Retrieve all amenities"""
+        amenities = [a.to_dict() for a in facade.get_all_amenities()]
+        return amenities, 200
 
-@api.route('/<amenity_id>')
+@api.route('/<string:amenity_id>')
 class AmenityResource(Resource):
-    @api.response(200, 'Amenity details retrieved successfully')
-    @api.response(404, 'Amenity not found')
     def get(self, amenity_id):
-        """Get amenity details by ID"""
-        amenity_data = api.payload
-        amenity = facade.get_amenity(self, amenity_id)
-        if not amenity:
-            return {'error': 'Amenity not found'}, 404
-        return {'id': new_amenity.id, 'name': new_amenity.name}, 200
+        """Retrieve a single amenity"""
+        try:
+            amenity = facade.get_amenity(amenity_id)
+            return amenity.to_dict(), 200
+        except Exception as e:
+            return {'error': str(e)}, 404
 
     @api.expect(amenity_model)
-    @api.response(200, 'Amenity updated successfully')
-    @api.response(404, 'Amenity not found')
-    @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
-        """Update an amenity's information"""
-        amenity_data = api.payload
-        amenity = facade.update_amenity(self, amenity_id, amenity_data)
-        if amenity is None:
-            return {'error': 'Amenity not found'}, 404
-        elif not amenity :
-            return {'error': 'Invalid input data'}, 400
-        else:
-            amenity.name = amenity_data['name']
-            return {'id': amenity.id, 'name': amenity.name}, 200
+        """Update an existing amenity"""
+        try:
+            amenity = facade.update_amenity(amenity_id, request.get_json())
+            return amenity.to_dict(), 200
+        except Exception as e:
+            return {'error': str(e)}, 400

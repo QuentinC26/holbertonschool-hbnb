@@ -1,7 +1,10 @@
 from flask_restx import Namespace, Resource, fields
-from app.services import facade
+from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from services.facade import HBnBFacade
 
 api = Namespace('reviews', description='Review operations')
+facade = HBnBFacade()
 
 review_model = api.model('Review', {
     'text': fields.String(required=True),
@@ -13,48 +16,36 @@ review_model = api.model('Review', {
 @api.route('/')
 class ReviewList(Resource):
     @api.expect(review_model)
+    @jwt_required()
     def post(self):
-        try:
-            data = api.payload
-            review = facade.create_review(data)
-            return review.to_dict(), 201
-        except ValueError as e:
-            return {'error': str(e)}, 400
+        """Create a new review (authenticated only)"""
+        data = request.get_json()
+        data['user_id'] = get_jwt_identity()
+        review = facade.create_review(data)
+        return review.to_dict(), 201
 
+    @jwt_required()
     def get(self):
-        reviews = [r.to_dict() for r in facade.get_all_reviews()]
-        return reviews, 200
+        """Get all reviews (authenticated only)"""
+        reviews = facade.get_all_reviews()
+        return [r.to_dict() for r in reviews], 200
 
-@api.route('/<review_id>')
+@api.route('/<string:review_id>')
 class ReviewResource(Resource):
+    @jwt_required()
     def get(self, review_id):
+        """Get a single review (authenticated only)"""
         review = facade.get_review(review_id)
         if not review:
             return {'error': 'Review not found'}, 404
         return review.to_dict(), 200
 
     @api.expect(review_model)
+    @jwt_required()
     def put(self, review_id):
+        """Update review (authenticated only)"""
         try:
-            data = api.payload
-            review = facade.update_review(review_id, data)
-            if not review:
-                return {'error': 'Review not found'}, 404
+            facade.update_review(review_id, request.get_json())
             return {'message': 'Review updated successfully'}, 200
-        except ValueError as e:
+        except Exception as e:
             return {'error': str(e)}, 400
-
-    def delete(self, review_id):
-        deleted = facade.delete_review(review_id)
-        if not deleted:
-            return {'error': 'Review not found'}, 404
-        return {'message': 'Review deleted successfully'}, 200
-
-@api.route('/places/<place_id>/reviews')
-class PlaceReviewList(Resource):
-    def get(self, place_id):
-        try:
-            reviews = facade.get_reviews_by_place(place_id)
-            return [r.to_dict() for r in reviews], 200
-        except ValueError as e:
-            return {'error': str(e)}, 404
