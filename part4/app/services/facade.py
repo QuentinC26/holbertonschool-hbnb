@@ -4,13 +4,14 @@ from app.models.amenity import Amenity
 from app.models.review import Review
 from app.persistence.repository import SQLAlchemyRepository
 from app.persistence.UserRepository import UserRepository
+from app.persistence.AmenityRepository import AmenityRepository
 
 class HBnBFacade:
     def __init__(self):
         self.user_repository = UserRepository()
         self.place_repository = SQLAlchemyRepository(Place)
         self.review_repository = SQLAlchemyRepository(Review)
-        self.amenity_repository = SQLAlchemyRepository(Amenity)
+        self.amenity_repository = AmenityRepository()
 
     def create_user(self, user_data):
         from app import bcrypt
@@ -55,14 +56,14 @@ class HBnBFacade:
 
     def update_amenity(self, amenity_id, amenity_data):
         # Placeholder for logic to update an amenity
-        amenity = self.amenity_repository.get(amenity_id)
+        amenity = self.amenity_repository.update(amenity_id, amenity_data)
         if not amenity:
             return None
         if 'name' in amenity_data:
             amenity.name = amenity_data['name']
+            return amenity
         else:
             return False
-        return amenity
 
     def create_place(self, data):
         # Valider les attributs requis
