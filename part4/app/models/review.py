@@ -1,6 +1,7 @@
 from app.models.baseclass import BaseModel
 from app.models.user import User
 from app.models.place import Place
+from sqlalchemy.orm import relationship
 
 
 class Review(BaseModel):
@@ -10,6 +11,10 @@ class Review(BaseModel):
     id = db.Column(db.String, primary_key = True, nullable=False)
     text = db.Column(db.String(50), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
+    user = relationship("User", backref="reviews")
+    place_id = db.Column(db.String, db.ForeignKey('places.id'), nullable=False)
+    place = relationship("Place", backref="reviews")
 
     def __init__(self, text, rating, place: Place, user: User):
         super().__init__()
