@@ -1,4 +1,5 @@
 from .user import User
+from .place_amenities import place_amenity
 from .place import Place
 from .review import Review
 from .amenity import Amenity
