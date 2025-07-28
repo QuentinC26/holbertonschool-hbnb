@@ -1,7 +1,8 @@
 from app.models.baseclass import BaseModel
 from app.models.user import User
-from app.models.amenity import Amenity
 from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey
+from .place_amenities import place_amenity
 
 
 class Place(BaseModel):
@@ -16,7 +17,7 @@ class Place(BaseModel):
     longitude = db.Column(db.Float)
     owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
     owner = relationship("User", backref="places")
-    amenities = relationship("Amenity", backref="places")
+    amenities = relationship("Amenity", secondary=place_amenity, back_populates="places")
 
     def __init__(self, title, description, price, latitude, longitude, owner: User, amenities=None):
         super().__init__()
@@ -37,10 +38,10 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
-        self.amenities = amenities or []
+        self.amenities = amenities if amenities is not None else []
 
     def add_review(self, review):
         self.reviews.append(review)
 
-    def add_amenity(self, amenity: Amenity):
+    def add_amenity(self, amenity):
         self.amenities.append(amenity)
