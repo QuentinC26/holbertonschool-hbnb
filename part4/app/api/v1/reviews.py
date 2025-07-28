@@ -45,8 +45,7 @@ class ReviewResource(Resource):
         reviews = facade.get_all_reviews()
         if not reviews:
             return {'error': 'Review not found'}, 404
-        return [{'id': review.id, 'text': review.text, 'rating': review.rating } for review in reviews #,"user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None}
-        ], 200
+        return [{'id': review.id, 'text': review.text, 'rating': review.rating, "user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None} for review in reviews], 200
 
     @api.expect(review_model)
     @jwt_required()
