@@ -82,6 +82,8 @@ class HBnBFacade:
         if not user:
             raise ValueError("Invalid owner_id")
 
+        amenities = []
+
         # Récupérer les amenities s'ils sont fournis
         for amenity_id in data.get("amenities", []):
             amenity = self.amenity_repository.get(amenity_id)
@@ -159,7 +161,7 @@ class HBnBFacade:
         place = self.place_repository.get(place_id)
         if not place:
             raise ValueError("Place not found")
-        return [review for review in self.review_repo.get_all() if review.place.id == place_id]
+        return [review for review in self.review_repository.get_all() if review.place.id == place_id]
 
     def update_review(self, review_id, review_data):
         review = self.review_repository.get(review_id)
