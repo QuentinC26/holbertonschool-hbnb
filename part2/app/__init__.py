@@ -1,20 +1,30 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-from flask_restx import Api
-from app.api.v1.users import api as users_ns
-from app.api.v1.auth import api as auth_ns
+from flask_cors import CORS
 
+from app.api import api_bp
+from app.models.engine.db_storage import DBStorage  # L'instance de stockage (DB)
+from config import Config
 
-import config
-
+db = SQLAlchemy()
 jwt = JWTManager()
 
-def create_app(config_class=config.DevelopmentConfig):
+def create_app(config_class=Config):
     app = Flask(__name__)
-    api = Api(app, version='1.0', title='HBnB API', description='HBnB Application API', doc='/api/v1/')
     app.config.from_object(config_class)
-    jwt.init_app(app)
 
-    api.add_namespace(auth_ns, path='/api/v1/auth')
-    api.add_namespace(users_ns, path='/api/v1/users')
+    # Init extensions
+    db.init_app(app)
+    jwt.init_app(app)
+    CORS(app)
+
+    # Register blueprints
+    app.register_blueprint(api_v1_bp, url_prefix='/api/v1')
+
+    # Close DB connection after each request
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        storage.close()
+
     return app

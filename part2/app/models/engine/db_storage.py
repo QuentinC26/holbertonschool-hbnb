@@ -1,7 +1,8 @@
 import os
 from sqlalchemy import create_engine
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base_model import Base
+from app.models.base_model import Base
 
 class DBStorage:
     __engine = None
@@ -59,3 +60,5 @@ class DBStorage:
     def close(self):
         """Removes the current session"""
         self.__session.remove()
+
+db = SQLAlchemy()

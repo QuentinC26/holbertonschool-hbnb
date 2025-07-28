@@ -3,12 +3,12 @@ from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
 
-from repository.user_repository import UserRepository
-from repository.place_repository import PlaceRepository
-from repository.review_repository import ReviewRepository
-from repository.amenity_repository import AmenityRepository
+from app.repository.user_repository import UserRepository
+from app.repository.place_repository import PlaceRepository
+from app.repository.review_repository import ReviewRepository
+from app.repository.amenity_repository import AmenityRepository
 
-from utils.validation import validate_price, validate_latitude, validate_longitude
+from app.utils.validation import validate_price, validate_latitude, validate_longitude
 
 class HBnBFacade:
     def __init__(self):

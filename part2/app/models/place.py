@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
+from .base_model import BaseModel, Base
 
 place_amenity = Table(
     'place_amenity', Base.metadata,
