@@ -42,10 +42,10 @@ class ReviewList(Resource):
 @api.route('/<review_id>')
 class ReviewResource(Resource):
     def get(self, review_id):
-        reviews = facade.get_all_reviews()
-        if not reviews:
+        review = facade.get_review(review_id)
+        if not review:
             return {'error': 'Review not found'}, 404
-        return [{'id': review.id, 'text': review.text, 'rating': review.rating, "user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None} for review in reviews], 200
+        return {'id': review.id, 'text': review.text, 'rating': review.rating, "user_id": review.user.id if review.user.id else None, 'place_id': review.place.id if review.place.id else None}, 200
 
     @api.expect(review_model)
     @jwt_required()
