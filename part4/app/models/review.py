@@ -2,6 +2,7 @@ from app.models.baseclass import BaseModel
 from app.models.user import User
 from app.models.place import Place
 from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey
 
 
 class Review(BaseModel):
