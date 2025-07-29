@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
-from app.api import api_bp
+from app.api.v1 import api_v1_bp
 from app.models.engine.db_storage import DBStorage  # L'instance de stockage (DB)
 from config import Config
 

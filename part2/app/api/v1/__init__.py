@@ -1,17 +1,22 @@
-# Import namespaces from individual resource modules
 
-from .users import api as users_api
-from .places import api as places_api
-from .amenities import api as amenities_api
-from .reviews import api as reviews_api
-from .auth import api as auth_api
+from flask_restx import Api
+from flask import Blueprint
 
-# Expose namespaces for higher-level import
+api_v1_bp = Blueprint('api', __name__, url_prefix='/api')
 
-api = [
-    users_api,
-    places_api,
-    amenities_api,
-    reviews_api,
-    auth_api
-]
+api = Api(api_v1_bp, title="HBnB API", version="1.0", description="HBnB API")
+
+# Import namespaces depuis le dossier v1 (version 1 de l'API)
+from app.api.v1 import users, places, amenities, reviews, auth
+from app.api.v1.users import api as users_ns
+from app.api.v1.places import api as places_ns
+from app.api.v1.amenities import api as amenities_ns
+from app.api.v1.reviews import api as reviews_ns
+from app.api.v1.auth import api as auth_ns
+
+# Enregistrement des namespaces
+api.add_namespace(users_ns, path='/users')
+api.add_namespace(places_ns, path='/places')
+api.add_namespace(amenities_ns, path='/amenities')
+api.add_namespace(reviews_ns, path='/reviews')
+api.add_namespace(auth_ns, path='/auth')
