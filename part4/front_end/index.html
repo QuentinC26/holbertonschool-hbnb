@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List of Places</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
     <header>
@@ -15,22 +16,25 @@
     </header>
     <main>
         <section id="filter">
-            <h1>Available Places</h1>
+           <img src="available.png" alt="place available">
             <br>
             <br>
             <label for="price-filter">Max Price:</label>
             <select id="price-filter">
-                <!-- Options will be populated dynamically -->
+                <option>All</option>
             </select>
         </section>
         <br>
         <br>
         <section id="places-list">
-            <ul>
-            <a class="place-card"><dt><h3>Name of Place</h3> 4</p></dt></a>
-            <a class="place-card"><dt><h3>Name of Place</h3> 5</p></dt></a>
-            <a class="place-card"><dt><h3>Name of Place</h3> 7</p></dt></a>
-            </ul>
+            <div class="place-card">
+            <div class="body-card"></div>
+                <div class="place-title"> <h1><section id="place.title"> Name of place</section></h1></div>
+                <br>
+                <div class="place-price"> <h3><section id="place.price"></section>Price of place</h3></div>
+                <br>
+                <div><a class="details-button" href="place.html"><img src="view_details.png" alt="view details"></div>
+            </div>
         </section>
     </main>
     <footer>
