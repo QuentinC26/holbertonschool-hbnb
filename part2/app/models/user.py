@@ -2,6 +2,7 @@ import re
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from .base_model import BaseModel, Base
+from werkzeug.security import check_password_hash
 
 class User(BaseModel, Base):
     __tablename__ = 'users'
@@ -27,3 +28,6 @@ class User(BaseModel, Base):
         self.email = email
         self.password = password
         self.is_admin = str(is_admin)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password, password)

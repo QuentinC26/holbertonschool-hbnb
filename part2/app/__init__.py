@@ -1,14 +1,14 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
+from app.extensions import db, jwt
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from app.api.v1 import api_v1_bp
-from app.models.engine.db_storage import DBStorage  # L'instance de stockage (DB)
+from app.persistence.repository import storage  # L'instance de stockage (DB)
 from config import Config
 
-db = SQLAlchemy()
-jwt = JWTManager()
 
 def create_app(config_class=Config):
     app = Flask(__name__)

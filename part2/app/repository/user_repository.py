@@ -1,7 +1,7 @@
 # app/repository/user_repository.py
 
 from app.models.user import User
-from app.models.engine.db_storage import db
+from app.extensions import db
 
 
 

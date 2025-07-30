@@ -1,5 +1,5 @@
 from app.models.review import Review
-from app.models.engine.db_storage import db
+from app.extensions import db
 
 class ReviewRepository:
     def __init__(self, session=db.session):

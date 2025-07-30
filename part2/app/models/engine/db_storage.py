@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from app.models.base_model import Base
 
 class DBStorage:
-    __engine = None
+    engine = None
     __session = None
 
     def __init__(self):
@@ -16,17 +16,17 @@ class DBStorage:
         env = os.getenv("HBNB_ENV")
 
         # Create the engine to connect to the MySQL database
-        self.__engine = create_engine(
+        self.engine = create_engine(
             f"mysql+mysqldb://{user}:{pwd}@{host}/{db}", pool_pre_ping=True)
 
         # If running in test environment, drop all tables
         if env == "test":
-            Base.metadata.drop_all(self.__engine)
+            Base.metadata.drop_all(self.engine)
 
     def reload(self):
         """Creates all tables in the database and initializes the session"""
-        Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Base.metadata.create_all(self.engine)
+        session_factory = sessionmaker(bind=self.engine, expire_on_commit=False)
         self.__session = scoped_session(session_factory)
 
     def all(self, cls=None):
@@ -60,5 +60,3 @@ class DBStorage:
     def close(self):
         """Removes the current session"""
         self.__session.remove()
-
-db = SQLAlchemy()

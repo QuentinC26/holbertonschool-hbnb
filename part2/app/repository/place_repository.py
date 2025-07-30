@@ -1,5 +1,5 @@
 from app.models.place import Place
-from app.models.engine.db_storage import db
+from app.extensions import db
 
 class PlaceRepository:
     def __init__(self, session=db.session):
