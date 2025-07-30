@@ -3,7 +3,10 @@ import os
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'mysql://root:root@localhost/hbnb_dev')
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://{os.getenv('HBNB_MYSQL_USER')}:{os.getenv('HBNB_MYSQL_PWD')}"
+        f"@{os.getenv('HBNB_MYSQL_HOST')}/{os.getenv('HBNB_MYSQL_DB')}"
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-secret-key')
     JWT_ACCESS_TOKEN_EXPIRES = 3600
