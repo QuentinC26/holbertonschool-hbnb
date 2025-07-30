@@ -7,7 +7,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: Georgia, serif;
 }
 
 body {
@@ -46,9 +46,112 @@ footer {
 }
 
 .place-card {
-    margin-left: 1em;
+    height: 200px;
+    width: 300px;
+    margin: auto;
+    background-color: #fffc4e;
+    color: #000000;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+.place-card-image {
+    position: relative;
+}
+
+.body-card{
+    text-align:center;
+    padding: 20px 25px;
+}
+
+.place-title{
+    font-family: Georgia;
+}
+
+.place-price{
+    font-family: Georgia, serif;
 }
 
 .details-button {
-    margin-left: 1em;
+    margin-left: auto;
+}
+
+.place-title_in_places {
+    font-family: Georgia;
+}
+
+.place-details {
+    height: 200px;
+    width: 800px;
+    background-color: #fffc4e;
+    color: #000000;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.place-info {
+    font-family: Georgia;
+    font-size: 18px;
+}
+
+.review-card {
+    height: 150px;
+    width: 800px;
+    margin: auto;
+    background-color: #fffc4e;
+    color: #000000;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.review-title {
+    font-family: Georgia;
+}
+
+.review-info {
+    font-family: Georgia;
+    font-size: 18px;
+}
+
+.add-review_in_place {
+    height: 150px;
+    width: 800px;
+    margin: auto;
+    background-color: #fffc4e;
+    color: #000000;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.add-review {
+    height: 350px;
+    width: 800px;
+    margin: auto;
+    background-color: #fffc4e;
+    color: #000000;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.login-in-hbnb {
+    height: 250px;
+    width: 800px;
+    margin: auto;
+    background-color: #fffc4e;
+    color: #000000;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 18px;
 }
