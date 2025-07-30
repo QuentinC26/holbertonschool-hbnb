@@ -5,20 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Review</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
+     <header>
+        <nav>
+            <a class="logo" href="index.html"><img src="logo_hbnb.png" alt="logo of hbnb"></a>
+            <a class="login-button" href="login.html" id="login-link"><img src="hbnb_login.png" alt="login logo"></a>
+        </nav>
+    </header>
     <main>
-        <!-- Add something to idfentify the place you're reviewing -->
+        <section id="reviews">
         <form id="review-form">
-            <h2>Add a Review</h2>
-            <label for="review">Your Review:</label>
+            <div class="add-review"> <img src="add_my_review.png" alt="add review">
+            <br>
+            <br>
+            <label for="review">Your Review for Name of place:</label>
+            <br>
+            <br>
             <textarea id="review" name="review" required></textarea>
+            <br>
+            <br>
             <label for="rating">Rating:</label>
             <select id="rating" name="rating" required>
-                <!-- Options for rating -->
+            <br>
+            <br>
+            <option><img src="1_star.png" alt="1/5">1/5</option>
+            <option><img src="2-star.png" alt="2/5">2/5</option>
+            <option><img src="3-star.png" alt="3/5">3/5</option>
+            <option><img src="4-star.png" alt="4/5">4/5</option>
+            <option><img src="5-star.png" alt="5/5">5/5</option>
             </select>
             <button type="submit">Submit Review</button>
         </form>
+        </section>
     </main>
     <script src="scripts.js"></script>
 </body>
