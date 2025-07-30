@@ -46,35 +46,19 @@ footer {
 }
 
 .place-card {
-    height: 200px;
-    width: 300px;
-    margin: auto;
+    height: 180px;
+    width: 250px;
+    font-size: 18px;
+    display: flex;
+}
+
+.place-card div {
     background-color: #fffc4e;
     color: #000000;
     margin: 20px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 10px;
-}
-.place-card-image {
-    position: relative;
-}
-
-.body-card{
-    text-align:center;
-    padding: 20px 25px;
-}
-
-.place-title{
-    font-family: Georgia;
-}
-
-.place-price{
-    font-family: Georgia, serif;
-}
-
-.details-button {
-    margin-left: auto;
 }
 
 .place-title_in_places {
