@@ -24,3 +24,14 @@ class Review(BaseModel, Base):
         self.rating = rating
         self.place_id = place.id
         self.user_id = user.id
+
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'text': self.text,
+            'rating': self.rating,
+            'user_id': str(self.user_id),
+            'place_id': str(self.place_id),
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat(),
+        }

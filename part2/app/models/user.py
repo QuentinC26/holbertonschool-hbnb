@@ -41,12 +41,12 @@ class User(BaseModel, Base):
         return check_password_hash(self.password, password)
 
     def to_dict(self):
-    return {
-        'id': str(self.id),
-        'first_name': self.first_name,
-        'last_name': self.last_name,
-        'email': self.email,
-        'is_admin': self.is_admin,
-        'created_at': self.created_at.isoformat() if self.created_at else None,
-        'updated_at': self.updated_at.isoformat() if self.updated_at else None
-    }
+        return {
+            'id': str(self.id),
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'is_admin': self.is_admin,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }

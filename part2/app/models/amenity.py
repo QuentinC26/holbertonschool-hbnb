@@ -13,3 +13,11 @@ class Amenity(BaseModel, Base):
         if not name or len(name.strip()) == 0:
             raise ValueError("Nom de l'équipement requis")
         self.name = name
+
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }

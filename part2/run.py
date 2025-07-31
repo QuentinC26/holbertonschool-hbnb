@@ -2,6 +2,7 @@
 import os
 from dotenv import load_dotenv
 from app import create_app
+from flask_jwt_extended import JWTManager
 
 load_dotenv()
 

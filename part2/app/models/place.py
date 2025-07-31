@@ -40,3 +40,16 @@ class Place(BaseModel, Base):
         self.latitude = latitude
         self.longitude = longitude
         self.owner_id = owner.id
+
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'title': self.title,
+            'description': self.description,
+            'price': self.price,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'owner_id': str(self.owner_id),
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
