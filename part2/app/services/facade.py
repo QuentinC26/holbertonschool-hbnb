@@ -19,7 +19,19 @@ class HBnBFacade:
 
     # Users
     def create_user(self, user_data):
-        user = User(**user_data)
+        required_fields = ['first_name', 'last_name', 'email', 'password']
+        for field in required_fields:
+            if not user_data.get(field):
+                raise ValueError(f"Le champ '{field}' est requis.")
+
+        user = User(
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],  # va appeler le setter → hash
+            is_admin=user_data.get('is_admin', False)
+        )
+
         self.user_repo.add(user)
         return user
 

@@ -28,7 +28,7 @@ class Login(Resource):
 
             access_token = create_access_token(identity={
                 'id': str(user.id),
-                'is_admin': user.is_admin
+                'is_admin': bool(user.is_admin)
             })
 
             return {'access_token': access_token}, 200
