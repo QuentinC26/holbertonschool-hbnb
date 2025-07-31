@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db, jwt
+from app.extensions import db, bcrypt, jwt
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -16,6 +16,7 @@ def create_app(config_class=Config):
 
     # Init extensions
     db.init_app(app)
+    bcrypt.init_app(app)
     jwt.init_app(app)
     CORS(app)
 
