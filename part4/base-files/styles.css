@@ -1,0 +1,241 @@
+/* styles.css */
+
+/* Reset global simple */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: 
+    url('images/appartment-background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #4b3b2b;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: rgba(255, 239, 224, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(75, 59, 43, 0.3);
+  margin-bottom: 25px;
+}
+
+header .logo {
+  height: 45px;
+  cursor: pointer;
+  filter: drop-shadow(1px 1px 1px rgba(75, 59, 43, 0.4));
+}
+
+header .login-button {
+  background-color: #b97a57;
+  color: #fff8f0;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: 2px solid #a06541;
+  box-shadow: 0 3px 5px rgba(185, 122, 87, 0.5);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+header .login-button:hover {
+  background-color: #a06541;
+  box-shadow: 0 5px 12px rgba(160, 101, 65, 0.7);
+  border-color: #7f4e31;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  background-color: rgba(249, 236, 224, 0.9);
+  padding: 14px 0;
+  border-radius: 10px;
+  margin-bottom: 35px;
+  box-shadow: 0 2px 12px rgba(185, 122, 87, 0.3);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+nav a {
+  color: #7f4e31;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #b97a57;
+  color: #fff8f0;
+  box-shadow: 0 2px 8px rgba(185, 122, 87, 0.6);
+}
+
+/* Main */
+main {
+  max-width: 720px;
+  margin: 0 auto 60px auto;
+  background-color: rgba(255, 248, 240, 0.95);
+  border-radius: 14px;
+  padding: 35px 40px 45px 40px;
+  box-shadow: 0 10px 25px rgba(75, 59, 43, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Décoration subtile au top left */
+main::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle at center, #b97a57 30%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.15;
+  pointer-events: none;
+  filter: blur(12px);
+}
+
+/* Titre */
+main h2 {
+  font-size: 2.3rem;
+  margin-bottom: 28px;
+  font-weight: 700;
+  color: #7f4e31;
+  text-shadow: 1px 1px 2px rgba(185, 122, 87, 0.6);
+}
+
+/* Place name */
+#place-name {
+  color: #b97a57;
+  font-style: italic;
+}
+
+/* Form */
+form.add-review {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Labels */
+form label {
+  font-weight: 600;
+  color: #664d3a;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+/* Textarea */
+form textarea {
+  resize: vertical;
+  min-height: 130px;
+  padding: 14px 18px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #c8a87c;
+  background-color: #fff8f0;
+  color: #4b3b2b;
+  box-shadow: inset 1px 1px 4px rgba(185, 122, 87, 0.15);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+form textarea:focus {
+  outline: none;
+  border-color: #b97a57;
+  box-shadow: 0 0 8px rgba(185, 122, 87, 0.6);
+}
+
+/* Select */
+form select {
+  width: 130px;
+  padding: 10px 14px;
+  font-size: 1.05rem;
+  border-radius: 10px;
+  border: 2px solid #c8a87c;
+  background-color: #fff8f0;
+  color: #4b3b2b;
+  cursor: pointer;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+form select:focus {
+  outline: none;
+  border-color: #b97a57;
+  box-shadow: 0 0 8px rgba(185, 122, 87, 0.6);
+}
+
+/* Bouton submit */
+form button[type="submit"] {
+  align-self: flex-start;
+  background-color: #b97a57;
+  color: #fff8f0;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 14px 42px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(185, 122, 87, 0.5);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+}
+
+form button[type="submit"]:hover {
+  background-color: #a06541;
+  box-shadow: 0 8px 22px rgba(160, 101, 65, 0.8);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 18px 0;
+  background-color: rgba(185, 122, 87, 0.9);
+  color: #fff8f0;
+  border-radius: 0 0 14px 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 -3px 10px rgba(185, 122, 87, 0.6);
+  user-select: none;
+}
+
+/* Responsive - simple */
+@media (max-width: 520px) {
+  main {
+    padding: 25px 25px 35px 25px;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  nav {
+    font-size: 1rem;
+    gap: 18px;
+  }
+
+  form select {
+    width: 100%;
+  }
+
+  form button[type="submit"] {
+    width: 100%;
+    padding: 14px 0;
+  }
+}
