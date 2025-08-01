@@ -69,24 +69,23 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
-        return {'id': place.id, 
-                'title': place.title,
-                'description': place.description,
-                'price': place.price,
-                'latitude': place.latitude,
-                'longitude': place.longitude,
-                'owner': {
-                    "id": place.owner.id, 
-                    "first_name": place.owner.first_name,
-                    "last_name": place.owner.last_name,
-                    "email": place.owner.email
-                    }   
-                    if place.owner else None, 
-                'amenities': [
-                    {
-                        'id': amenity.id, 
-                        'name': amenity.name
-                    } for amenity in place.amenities]}, 200
+        reviews = facade.get_reviews_by_place(place_id)
+        return {
+            'id': place.id,
+            'title': place.title,
+            'description': place.description,
+            'price': place.price,
+            'latitude': place.latitude,
+            'longitude': place.longitude,
+            'owner': {
+                "id": place.owner.id,
+                "first_name": place.owner.first_name,
+                "last_name": place.owner.last_name,
+                "email": place.owner.email
+            } if place.owner else None,
+            'amenities': [{'id': amenity.id, 'name': amenity.name} for amenity in place.amenities],
+            'reviews': [{'id': review.id, 'text': review.text, 'rating': review.rating, 'user': {'first_name': review.user.first_name, 'last_name': review.user.last_name}} for review in reviews]
+        }, 200
 
     @api.response(200, 'Place updated successfully')
     @api.response(400, 'Invalid input data')
@@ -111,6 +110,6 @@ class PlaceReviewList(Resource):
     def get(self, place_id):
         try:
             reviews = facade.get_reviews_by_place(place_id)
-            return [{'id': review.id, 'text': review.text, 'rating': review.rating} for review in reviews], 200
+            return [{'id': review.id,'text': review.text, 'rating': review.rating,}], 200
         except ValueError as e:
             return {'error': str(e)}, 404
