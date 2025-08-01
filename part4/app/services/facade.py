@@ -179,3 +179,10 @@ class HBnBFacade:
             return None
         review.delete()
         return True
+
+    def get_review_by_user_and_place(self, user_id, place_id):
+        return next(
+            (review for review in self.review_repository.get_all()
+             if review.user.id == user_id and review.place.id == place_id),
+            None
+        )
