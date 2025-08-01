@@ -82,12 +82,16 @@ footer {
 }
 
 .review-card {
-    height: 150px;
+    height: 300px;
     width: 800px;
-    margin: auto;
+    font-size: 18px;
+    display: flex;
+}
+
+.review-card div {
     background-color: #fffc4e;
     color: #000000;
-    margin: auto;
+    margin: 20px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -103,7 +107,7 @@ footer {
 }
 
 .add-review_in_place {
-    height: 150px;
+    height: 200px;
     width: 800px;
     margin: auto;
     background-color: #fffc4e;
@@ -115,7 +119,7 @@ footer {
 }
 
 .add-review {
-    height: 350px;
+    height: 400px;
     width: 800px;
     margin: auto;
     background-color: #fffc4e;
