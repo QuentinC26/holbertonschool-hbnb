@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login</title>
+  <title>Register</title>
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
@@ -17,12 +17,24 @@
 
   <nav>
     <a href="index.html">Home</a>
-    <a href="login.html">Login</a>
+    <a href="login.html" id="nav-login">Login</a>
+    <a href="register.html" id="nav-register">Create</a>
   </nav>
 
   <main>
-    <form id="login-form" class="form">
-      <h2>Login</h2>
+    <form id="register-form" class="form">
+      <h2>Create Account</h2>
+
+      <div class="form-group">
+        <label for="name">Full Name:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Enter your full name"
+          required
+        />
+      </div>
 
       <div class="form-group">
         <label for="email">Email:</label>
@@ -33,7 +45,6 @@
           placeholder="Enter your email"
           required
           autocomplete="email"
-          aria-label="Email"
         />
       </div>
 
@@ -45,14 +56,24 @@
           name="password"
           placeholder="Enter your password"
           required
-          autocomplete="current-password"
-          aria-label="Password"
+          autocomplete="new-password"
         />
       </div>
 
-      <div id="login-error" class="error-message"></div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password:</label>
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm-password"
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
 
-      <button type="submit">Login</button>
+      <div id="register-error" class="error-message"></div>
+
+      <button type="submit">Create Account</button>
     </form>
   </main>
 

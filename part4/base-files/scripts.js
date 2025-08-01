@@ -16,7 +16,7 @@ function getPlaceIdFromURL() {
 
 async function loginUser(email, password) {
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/v1/authentication_token', {
+    const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -116,6 +116,48 @@ function checkAuthenticationIndex() {
     fetchPlaces(token);
   }
 }
+
+
+// ---------- Register utilisateur ----------
+document.addEventListener('DOMContentLoaded', () => {
+  const registerForm = document.getElementById('registerForm');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(registerForm);
+      const data = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        email: formData.get('email'),
+        password: formData.get('password')
+      };
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/v1/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(`Erreur: ${error.message || 'Impossible de créer le compte.'}`);
+          return;
+        }
+
+        alert('Compte créé avec succès. Vous pouvez maintenant vous connecter.');
+        window.location.href = 'login.html';
+
+      } catch (error) {
+        console.error('Erreur inscription:', error);
+        alert('Une erreur est survenue lors de l’inscription.');
+      }
+    });
+  }
+});
 
 // --- TASK 3: PLACE DETAILS ---
 
@@ -279,3 +321,44 @@ document.addEventListener('DOMContentLoaded', () => {
     setupReviewForm();
   }
 });
+
+// Gérer la soumission du formulaire d'inscription
+const registerForm = document.getElementById('register-form');
+if (registerForm) {
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = registerForm.name.value.trim();
+    const email = registerForm.email.value.trim();
+    const password = registerForm.password.value;
+    const confirmPassword = registerForm['confirm-password'].value;
+
+    const errorBox = document.getElementById('register-error');
+    errorBox.textContent = '';
+
+    if (password !== confirmPassword) {
+      errorBox.textContent = 'Passwords do not match.';
+      return;
+    }
+
+    try {
+      const res = await fetch('http://127.0.0.1:5000/api/v1/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        errorBox.textContent = data.message || 'Registration failed.';
+        return;
+      }
+
+      alert('Account created successfully. You can now log in.');
+      window.location.href = 'login.html';
+    } catch (error) {
+      errorBox.textContent = 'An error occurred. Please try again.';
+      console.error(error);
+    }
+  });
+}

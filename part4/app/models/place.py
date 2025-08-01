@@ -16,12 +16,14 @@ class Place(BaseModel, Base):
     price = Column(Integer, nullable=False)
     latitude = Column(Float)
     longitude = Column(Float)
+    
     owner_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+    owner = relationship("User", backref="places")
 
     reviews = relationship("Review", backref="place", cascade="all, delete")
     amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
 
-    def __init__(self, title, description, price, latitude, longitude, owner):
+    def __init__(self, title, description, price, latitude, longitude, owner_id):
         super().__init__()
         if not title or len(title) > 100:
             raise ValueError("Titre requis ou trop long (max 100 caractères)")
@@ -31,15 +33,15 @@ class Place(BaseModel, Base):
             raise ValueError("Latitude invalide")
         if not (-180.0 <= longitude <= 180.0):
             raise ValueError("Longitude invalide")
-        if not owner or not hasattr(owner, 'id'):
-            raise ValueError("Propriétaire invalide")
+        if not owner_id:
+            raise ValueError("owner_id est requis")
 
         self.title = title
         self.description = description
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-        self.owner_id = owner.id
+        self.owner_id = owner_id
 
     def to_dict(self):
         return {

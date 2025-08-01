@@ -2,18 +2,19 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.facade import HBnBFacade
+from app.models.user import User
+from app.persistence.repository import storage
 
 api = Namespace('places', description='Place operations')
 facade = HBnBFacade()
 
-# === Modèle pour Swagger ===
+# === Modèle Swagger sans owner_id ===
 place_model = api.model('Place', {
     'title': fields.String(required=True),
     'description': fields.String,
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
     'longitude': fields.Float(required=True),
-    'owner_id': fields.String(required=True),
     'amenities': fields.List(fields.String, required=True)
 })
 
@@ -25,19 +26,24 @@ class PlaceList(Resource):
     def post(self):
         """Create a new place"""
         try:
-            current_user = get_jwt_identity()
-            data = request.get_json()
-            data['owner_id'] = current_user['id']  # Sécurisé depuis JWT
+            user_id = get_jwt_identity()
+            current_user = storage.get(User, user_id)
+            if not current_user:
+                return {"error": "User not found"}, 404
 
-            place = facade.create_place(data)
+            data = request.get_json()
+            place = facade.create_place(data, current_user)
             return place.to_dict(with_owner=True, with_amenities=True), 201
+
+        except ValueError as ve:
+            return {'error': str(ve)}, 400
         except Exception as e:
-            return {'error': str(e)}, 400
+            return {'error': 'Internal server error'}, 500
 
     def get(self):
         """Retrieve all places"""
         places = facade.get_all_places()
-        return [p.to_dict() for p in places], 200
+        return [p.to_dict(with_owner=True, with_amenities=True) for p in places], 200
 
 # === GET /places/<id> et PUT /places/<id> ===
 @api.route('/<string:place_id>')
@@ -55,19 +61,18 @@ class PlaceResource(Resource):
     def put(self, place_id):
         """Update an existing place (admin or owner only)"""
         try:
-            current_user = get_jwt_identity()
-            user_id = current_user.get('id')
-            is_admin = current_user.get('is_admin', False)
+            identity = get_jwt_identity()
+            user_id = identity.get('id') if isinstance(identity, dict) else identity
+            is_admin = identity.get('is_admin', False) if isinstance(identity, dict) else False
 
             place = facade.get_place(place_id)
             if not place:
                 return {'error': 'Place not found'}, 404
 
-            # Vérifie si admin ou propriétaire
+            # Vérifie autorisation
             if not is_admin and place.owner_id != user_id:
                 return {'error': 'Unauthorized action'}, 403
 
-            # Mise à jour des données
             data = request.get_json()
             updated_place = facade.update_place(place_id, data)
             return updated_place.to_dict(with_owner=True, with_amenities=True), 200

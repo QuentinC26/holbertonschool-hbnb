@@ -2,6 +2,7 @@ from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+from app.persistence.repository import storage
 
 from app.repository.user_repository import UserRepository
 from app.repository.place_repository import PlaceRepository
@@ -130,14 +131,56 @@ class HBnBFacade:
         return True
 
     # Places
-    def create_place(self, place_data):
-        validate_price(place_data.get('price'))
-        validate_latitude(place_data.get('latitude'))
-        validate_longitude(place_data.get('longitude'))
+    def create_place(self, data):
+        """Crée un nouveau lieu après validation des données"""
+        # === Validation manuelle ===
+        required_fields = ['title', 'price', 'latitude', 'longitude', 'amenities', 'owner_id']
+        for field in required_fields:
+            if field not in data:
+                raise ValueError(f"Le champ '{field}' est requis.")
 
-        place = Place(**place_data)
-        self.place_repo.add(place)
-        return place
+        if not isinstance(data['title'], str) or not data['title'].strip():
+            raise ValueError("Le titre doit être une chaîne non vide.")
+        if not isinstance(data['price'], (int, float)) or data['price'] < 0:
+            raise ValueError("Le prix doit être un nombre positif.")
+        if not isinstance(data['latitude'], (int, float)):
+            raise ValueError("La latitude doit être un nombre.")
+        if not isinstance(data['longitude'], (int, float)):
+            raise ValueError("La longitude doit être un nombre.")
+        if not isinstance(data['amenities'], list):
+            raise ValueError("Les équipements doivent être une liste.")
+
+        # === Vérification du propriétaire ===
+        owner = storage.get(User, data['owner_id'])
+        if not owner:
+            raise ValueError("Propriétaire invalide.")
+
+        # === Vérification des amenities ===
+        amenities_objs = []
+        for amenity_id in data['amenities']:
+            amenity = storage.get(Amenity, amenity_id)
+            if not amenity:
+                raise ValueError(f"Amenity avec id {amenity_id} introuvable.")
+            amenities_objs.append(amenity)
+
+        # === Création du Place ===
+        new_place = Place(
+            title=data['title'],
+            description=data.get('description'),
+            price=data['price'],
+            latitude=data['latitude'],
+            longitude=data['longitude'],
+            owner_id=owner.id
+        )
+
+        # === Ajout des équipements ===
+        new_place.amenities = amenities_objs
+
+        # === Sauvegarde ===
+        storage.new(new_place)
+        storage.save()
+
+        return new_place
 
     def get_place(self, place_id):
         return self.place_repo.get(place_id)
