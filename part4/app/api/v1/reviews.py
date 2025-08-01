@@ -26,9 +26,10 @@ class ReviewList(Resource):
             return {'error': 'Place not found'}, 404
         review = facade.get_all_reviews()
         try:
-            if current_user == place.owner.id:
-                return {'error': "you cannot review your own place."}, 400
-            if review:
+            if user_id == place.owner.id:
+                return {'error': "You cannot review your own place."}, 400
+            existing_review = facade.get_review_by_user_and_place(user_id, review_data["place_id"])
+            if existing_review:
                 return {'error': "You have already reviewed this place."}, 400
             new_review = facade.create_review(review_data)
             return {"id": new_review.id, "text": new_review.text, "rating": new_review.rating, "user_id": user.id if user.id else None, 'place_id': place.id if place.id else None}, 201
