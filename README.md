@@ -7,7 +7,8 @@ Hbnb est un projet académique de la Holberton School, réalisé en groupe avec 
 
 - [Technologies utilisées](#technologiesutilisées)
 - [Bilan du projet](#bilanduprojet)
-
+- [Organisation](#organisation)
+- [Partie technique](#partietechnique)
 
 ## Technologies utilisées
 
@@ -20,7 +21,7 @@ Le projet Hbnb repose sur les technologies suivantes :
 
 ## Bilan du projet
 
-### L'organisation
+### Organisation
 
 **Méthode Agile :**
 
@@ -48,6 +49,6 @@ Dans ce projet, je me suis rendu compte à quel point les noms explicites des br
 
 **Conclusion :** Ce projet de groupe m'a d'apprendre énormément de chose sur l'organisation, la répartition des tâches, l'assemblage des codes de chacun et acquérir une méthode de travail simple et organisé pour mes futurs projets. 
 
-### La partie technique
+### Partie technique
 
 /
