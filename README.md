@@ -5,6 +5,7 @@ Hbnb est un projet académique de la Holberton School, réalisé en groupe avec 
 ## Table des matières
 
 - [Technologies utilisées](#technologiesutilisées)
+- [Mon travail sur ce projet](#montravailsurceprojet)
 - [Bilan du projet](#bilanduprojet)
 
 ## Technologies utilisées
@@ -15,6 +16,20 @@ Le projet Hbnb repose sur les technologies suivantes :
 - **Front-end** : `JavaScript` pour une interface utilisateur réactive et moderne.
 - **Base de données** : [MySQL](https://www.mysql.com/) pour le stockage structuré des données.
 - **Authentification** : `flask-jwt-extended`, `Simple JWT` pour la gestion sécurisée des utilisateurs et des tokens.
+
+## Mon travail sur ce projet
+
+Voici les différentes choses sur lesquels j'ai travaillé sur ce projet :
+
+- Conception d'un diagramme de packages de haut niveau
+- Création des API sur toute la partie utilisateur et la partie des équipements
+- Hachage des mots de passe
+- Intégration du panneau d'administration
+- Mappage de l’entité User vers un modèle SQLAlchemy
+- Conception d'un diagramme entité–relation (ER)
+- Développement de toute la partie front-end
+
+L’ensemble des fonctionnalités principales est opérationnel. Certaines parties pourraient toutefois être améliorées avec davantage de temps, notamment en termes d’optimisation et d’ergonomie.
 
 ## Bilan du projet
 
